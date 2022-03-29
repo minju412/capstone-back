@@ -1,10 +1,10 @@
 # capstone-design-team3
 
 ## Members
-- [이재현](https://github.com/greedy-hacker) (팀장) 
+- [이재현](https://github.com/greedy-hacker) 
 - [이기영](https://github.com/lgy159) 
 - [최민주](https://github.com/minju412)
-- [전민재](https://github.com/Madb33)
+- [전민재](https://github.com/Madb33) (팀장) 
 - [탐](https://github.com/hieupml)
 
 ## Github 활용
