@@ -1,3 +1,4 @@
+
 const multer = require("multer");
 const csvFilter = (req, file, cb) => {
     if (file.mimetype.includes("csv")) {
@@ -12,7 +13,7 @@ var storage = multer.diskStorage({
     },
     filename: (req, file, cb) => {
         console.log(file.originalname);
-        cb(null, `${file.originalname}`);
+        cb(null, `${Date.now()}-${file.originalname}`);
         // cb(null, `${Date.now()}-bezkoder-${file.originalname}`);
     },
 });

@@ -1,39 +1,46 @@
-module.exports = (sequelize, DataTypes) => {
+module.exports = (sequelize, Sequelize) => {
     const Result = sequelize.define('Result', {
+        // id: {
+        //     type: Sequelize.INT,
+        //     // allowNull: false,
+        //     // primaryKey: true,
+        //     autoIncrement: true
+        // },
         url: {
-            type: DataTypes.STRING(200),
+            type: Sequelize.STRING(200),
             allowNull: false,
             unique: true,
         },
         title: {
-            type: DataTypes.STRING(100),
+            type: Sequelize.STRING(100),
             allowNull: false,
         },
-        language: {
-            type: DataTypes.STRING(20),
+        lang: {
+            type: Sequelize.STRING(20),
             allowNull: false,
         },
         category: {
-            type: DataTypes.ENUM('adult', 'hacking', 'drug', 'gambling', 'murder', 'info_leak', 'weapon', 'unknown'),
+            type: Sequelize.ENUM('adult', 'hacking', 'drug', 'gambling', 'murder', 'info_leak', 'weapon', 'unknown'),
             allowNull: false,
         },
         site_tracking_codes: {
-            type: DataTypes.JSON,
+            type: Sequelize.JSON,
             allowNull: true,
         },
         personal_information: {
-            type: DataTypes.JSON,
+            type: Sequelize.JSON,
             allowNull: true,
         },
-        others: {
-            type: DataTypes.JSON,
+        etc: {
+            type: Sequelize.JSON,
             allowNull: true,
         },
         reference_url: {
-            type: DataTypes.STRING(200),
+            type: Sequelize.STRING(200),
             allowNull: true,
         },
     }, {
+        timestamps: false,
         charset: 'utf8',
         collate: 'utf8_general_ci', // 한글 저장
     });
