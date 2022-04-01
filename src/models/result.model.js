@@ -15,7 +15,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING(100),
             allowNull: false,
         },
-        lang: {
+        language: {
             type: Sequelize.STRING(20),
             allowNull: false,
         },
@@ -31,7 +31,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.JSON,
             allowNull: true,
         },
-        etc: {
+        others: {
             type: Sequelize.JSON,
             allowNull: true,
         },

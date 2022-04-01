@@ -113,22 +113,22 @@ const download = (req, res) => {
                 id,
                 url,
                 title,
-                lang,
+                language,
                 category,
                 site_tracking_codes,
                 personal_information,
-                etc,
+                others,
                 reference_url
             } = obj;
             results.push({
                 id,
                 url,
                 title,
-                lang,
+                language,
                 category,
                 site_tracking_codes,
                 personal_information,
-                etc,
+                others,
                 reference_url
             });
         });
