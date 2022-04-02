@@ -2,10 +2,15 @@
 
 const express = require("express");
 const app = express();
+
+const cors = require('cors');
+
 const db = require("./models");
 const initRoutes = require("./routes/result.routes");
 global.__basedir = __dirname + "/..";
+
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 // app.use(express.json); ///
 

@@ -133,7 +133,7 @@ const download = (req, res) => {
             });
         });
 
-        const csvFields = ["Id", "Url", "Title", "Lang", "Category", "Site_Tracking_Codes", "Personal_Information", "Etc", "Reference_Url"];
+        const csvFields = ["Id", "Url", "Title", "Language", "Category", "Site_Tracking_Codes", "Personal_Information", "Others", "Reference_Url"];
         const csvParser = new CsvParser({csvFields});
         const csvData = csvParser.parse(results);
 
