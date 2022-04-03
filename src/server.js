@@ -1,5 +1,8 @@
 // const test = require("./data/test.js"); ////////
 
+require('dotenv').config();
+const env = process.env;
+
 const express = require("express");
 const app = express();
 
@@ -12,7 +15,7 @@ global.__basedir = __dirname + "/..";
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-// app.use(express.json); ///
+// app.use(express.json); ///å
 
 initRoutes(app);
 
@@ -29,7 +32,7 @@ db.sequelize.sync()
 
 // app.use('/', require('./routes')); ///
 
-let port = 3065;
+let port = env.PORT;
 app.listen(port, () => {
     console.log(`Running at localhost:${port}`);
 });

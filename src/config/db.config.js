@@ -1,8 +1,11 @@
+require('dotenv').config();
+const env = process.env;
+
 module.exports = {
-    HOST: "127.0.0.1",
-    USER: "root",
-    PASSWORD: "mysql",
-    DB: "darkweb-db",
+    HOST:env.MYSQL_HOST,
+    USER: env.MYSQL_USERNAME,
+    PASSWORD: env.MYSQL_PASSWORD,
+    DB: env.MYSQL_DATABASE,
     dialect: "mysql",
     pool: {
         max: 5,

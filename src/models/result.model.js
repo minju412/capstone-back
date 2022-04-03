@@ -1,18 +1,16 @@
 module.exports = (sequelize, Sequelize) => {
     const Result = sequelize.define('Result', {
-        // id: {
-        //     type: Sequelize.INT,
-        //     // allowNull: false,
-        //     // primaryKey: true,
-        //     autoIncrement: true
-        // },
+        thumbnail: {
+            type: Sequelize.STRING(200),
+            allowNull: true,
+        },
         url: {
             type: Sequelize.STRING(200),
             allowNull: false,
             unique: true,
         },
         title: {
-            type: Sequelize.STRING(100),
+            type: Sequelize.STRING(200),
             allowNull: false,
         },
         language: {
