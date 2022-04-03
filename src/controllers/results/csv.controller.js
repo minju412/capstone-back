@@ -110,6 +110,7 @@ const download = (req, res) => {
 
         objs.forEach((obj) => {
             const {
+                thumbnail,
                 id,
                 url,
                 title,
@@ -121,6 +122,7 @@ const download = (req, res) => {
                 reference_url
             } = obj;
             results.push({
+                thumbnail,
                 id,
                 url,
                 title,
@@ -133,7 +135,7 @@ const download = (req, res) => {
             });
         });
 
-        const csvFields = ["Id", "Url", "Title", "Language", "Category", "Site_Tracking_Codes", "Personal_Information", "Others", "Reference_Url"];
+        const csvFields = ["Thumbnail","Id", "Url", "Title", "Language", "Category", "Site_Tracking_Codes", "Personal_Information", "Others", "Reference_Url"];
         const csvParser = new CsvParser({csvFields});
         const csvData = csvParser.parse(results);
 
