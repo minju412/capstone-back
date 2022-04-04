@@ -1,10 +1,5 @@
 const db = require("../../models");
-const fs = require("fs");
-const csv = require("fast-csv");
 const Result = db.results;
-
-// const Sequelize = require("sequelize");
-// const Op = Sequelize.Op;
 
 const getResults = (req, res) => {
     Result.findAll()
@@ -21,11 +16,11 @@ const getResults = (req, res) => {
 
 const count = (req, res) => {
     try {
-        Result.count({
-            where: {category: req.query.category}})
-            .then(data => {
-                res.json([{ category: req.query.category, count: data }]);
-            })
+        db.sequelize.query("SELECT category, COUNT(title) AS count FROM Results GROUP BY category")
+        .then(data => {
+            // res.send(data);
+            res.json(data[0]);
+        })
     } catch (error) {
         console.log(error);
         res.status(500).send({
