@@ -42,19 +42,6 @@ const upload = async (req, res) => {
     }
 };
 
-const getResults = (req, res) => {
-    Result.findAll()
-        .then((data) => {
-            res.send(data);
-        })
-        .catch((err) => {
-            res.status(500).send({
-                message:
-                    err.message || "Some error occurred while retrieving results.",
-            });
-        });
-};
-
 const download = (req, res) => {
     Result.findAll().then((objs) => {
         let results = [];
@@ -96,8 +83,8 @@ const download = (req, res) => {
         res.status(200).end(csvData);
     });
 };
+
 module.exports = {
     upload,
-    getResults,
     download
 };
