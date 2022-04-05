@@ -23,5 +23,5 @@ db.sequelize.sync()
 
 let port = env.PORT;
 app.listen(port, () => {
-    console.log(`Running at localhost:${port}`);
+    console.log(`Running at localhost...`);
 });
