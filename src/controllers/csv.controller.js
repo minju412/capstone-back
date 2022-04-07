@@ -1,4 +1,4 @@
-const db = require("../../models");
+const db = require("../models");
 const Result = db.results;
 const fs = require("fs");
 const csv = require("fast-csv");

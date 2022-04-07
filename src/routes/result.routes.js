@@ -1,11 +1,9 @@
 const express = require("express");
 const router = express.Router();
 
-const csvController = require("../controllers/csv/csv.controller");
-const resultsController = require("../controllers/results/results.controller");
+const csvController = require("../controllers/csv.controller");
+const resultsController = require("../controllers/results.controller");
 const upload = require("../middlewares/upload");
-
-const{ Results } = require('../models/result.model'); /////
 
 let routes = (app) => {
     router.get("/results", resultsController.getResults);

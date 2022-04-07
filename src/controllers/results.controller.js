@@ -1,11 +1,11 @@
-const db = require("../../models");
+const db = require("../models");
 const Result = db.results;
 
 const Sequelize = require("sequelize");
 const Op = Sequelize.Op;
 
 // pagination with filtering
-const getResults = (req, res) => {
+const getResults = async (req, res) => {
     // pagination
     const paged = req.query.paged;
     const _limit = 10;
@@ -31,7 +31,7 @@ const getResults = (req, res) => {
         lang_attr[Op.not]= null;
     }
 
-    Result
+    await Result
         .findAll({
         where: {
             language: lang_attr,
@@ -43,7 +43,7 @@ const getResults = (req, res) => {
         offset:_offset
         })
         .then((data) => {
-            res.send(data);
+            res.status(200).send(data);
         })
         .catch((err) => {
             res.status(500).send({
@@ -57,7 +57,7 @@ const count = (req, res) => {
     try {
         db.sequelize.query("SELECT category, COUNT(title) AS count FROM Results GROUP BY category")
         .then(data => {
-            res.json(data[0]);
+            res.status(200).json(data[0]);
         })
     } catch (error) {
         console.log(error);
