@@ -1,8 +1,8 @@
 const db = require("../../models");
 const Result = db.results;
 
-// const Sequelize = require("sequelize");
-// const Op = Sequelize.Op;
+const Sequelize = require("sequelize");
+const Op = Sequelize.Op;
 
 // pagination with filtering
 const getResults = (req, res) => {
@@ -17,12 +17,27 @@ const getResults = (req, res) => {
     const sortby = req.query.sortby;
     const order = req.query.order; // asc OR desc
 
+    const category_attr = {};
+    if ( cg ) {
+        category_attr[Op.eq]= cg;
+    } else {
+        category_attr[Op.not]= null;
+    }
+
+    const lang_attr = {};
+    if ( lang ) {
+        lang_attr[Op.eq]= lang;
+    } else {
+        lang_attr[Op.not]= null;
+    }
+
     Result
         .findAll({
         where: {
-           language: lang,
-            category: cg
+            language: lang_attr,
+            category: category_attr,
         },
+        raw : true,
         order: [[`${sortby}`, `${order}`]],
         limit:_limit,
         offset:_offset
@@ -37,28 +52,6 @@ const getResults = (req, res) => {
             });
         });
 };
-
-//// only pagination
-// const getResults = (req, res) => {
-//     const paged = req.query.paged;
-//     const _limit = 10;
-//     const _offset = (paged-1) * _limit; // 1페이지부터 시작
-//
-//     Result
-//         .findAll({
-//             limit:_limit,
-//             offset:_offset
-//         })
-//         .then((data) => {
-//             res.send(data);
-//         })
-//         .catch((err) => {
-//             res.status(500).send({
-//                 message:
-//                     err.message || "Some error occurred while retrieving results.",
-//             });
-//         });
-// };
 
 const count = (req, res) => {
     try {
