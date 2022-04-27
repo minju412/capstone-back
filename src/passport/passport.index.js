@@ -4,7 +4,7 @@ const { User } = require('../models/user.model')
 
 module.exports = () => {
     passport.serializeUser((user, done) => {
-        done(null, user.id);
+        done(null, user.id); // user.id만 세션 객체에 넣음
     });
     passport.deserializeUser(async (id, done) => {
         try{

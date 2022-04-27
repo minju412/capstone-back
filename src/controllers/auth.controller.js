@@ -30,7 +30,6 @@ const signup = async (req, res) => {
             message: "Could not sign up.",
         });
     }
-
 };
 
 // 로그인 (미들웨어 확장)
@@ -48,6 +47,7 @@ const signin = (req, res, next) => {
                 console.error(loginErr);
                 return next(loginErr);
             }
+            // 내부적으로 쿠키 전송 ( res.setHeader('Cookie', 'csdjf...'); )
             return res.status(200).json(user); // 사용자 정보를 프론트로 넘김
         });
     })(req, res, next);
