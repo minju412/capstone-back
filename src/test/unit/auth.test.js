@@ -1,52 +1,125 @@
-// const fn = require('../../controllers/auth.controller');
-
-// jest.mock('../../controllers/auth.controller');
-// fn.signup.mockReturnValue({name:"Ann"});
-
-// test('유저를 만든다.',()=>{
-//     const user = fn.signup("Ann");
-//     expect(user.name).toBe("Ann");
-// });
-
-// jest.mock('../../models/user.model');
-// const User = require('../../models/user.model');
-
-
-
+const mockFindOne = jest.fn();
+const mockCreate = jest.fn();
 
 const { signup, signin } = require('../../controllers/auth.controller');
-// const fn = require('../../controllers/auth.controller');
+const Users = require('../../models/user.model');
+const httpMocks = require('node-mocks-http');
+const newUser = require('../data/user.json');
 
-// jest.mock('../../controllers/auth.controller');
+jest.mock('../../models/user.model',
+    () => jest.fn().mockImplementation(
+        () => ({
+            findOne: mockFindOne,
+            create: mockCreate,
+        }),
+    ));
+
 // fn.signup.mockReturnValue({userName: "ann", userEmail: "abc@naver.com",  userPw:"1234"});
 
+
+// test('[DB 데이터 조회 테스트] 사용자 id를 통해 password 조회 테스트', async () => {
+//     const req = httpMocks.createRequest({
+//         method: 'GET',
+//         url: '/api/test?id=user@test.com',
+//     });
+//     const res = httpMocks.createResponse();
+//     const next = null;
+//     const expectedResult = { password: 'mypass123' };
+//     const mockFindPasswordById = jest.spyOn(Users, 'findPasswordById');
+//     mockFindPasswordById.mockResolvedValue(expectedResult);
+//     await UserController.getPassword(req, res, next);
+//     expect(res.statusCode).toBe(200);
+//     expect(res._getJSONData()).toStrictEqual(expectedResult);
+// });
+
+//beforeEach
+// let req, res, next;
+// beforeEach(() => {
+//     req = httpMocks.createRequest({
+//         method: 'POST',
+//         url: '/auth/signup',
+//         body: { userName: "ann", userEmail: "abc@naver.com",  userPw:"1234" },
+//     });
+//     res = httpMocks.createResponse();
+//     // next = null;
+// });
+
 describe('회원가입 관련 작업', () => {
-    const req = {
+    // beforeEach(() => {
+    //     // Mock 데이터 넣어주기
+    //     req.body = newUser;
+    // });
+
+    const req = httpMocks.createRequest({
+        method: 'POST',
+        url: '/auth/signup',
+        body: newUser,
         // body: { userName: "ann", userEmail: "abc@naver.com",  userPw:"1234" },
-        user: { id: 1, userName: "ann", userEmail: "abc@naver.com",  userPw:"1234" },
-        // params: { id: 2 }
-    };
-    const res = {
-        status: jest.fn(() => res),
-        send: jest.fn(),
-    };
-    const next = jest.fn();
+    });
+    const res = httpMocks.createResponse();
+    // req.body = newUser;
 
-    test.skip('회원가입 후 ok를 응답합니다.', async () => {
+
+    test.skip('이미 가입되어있다면 회원가입에 실패합니다.', async () => {
+        Users().findOne.mockReturnValue(Promise.resolve({
+            signup(userEmail) {
+                return Promise.resolve(true);
+            }
+        }));
+
         await signup(req, res);
-        expect(res.status).toBeCalledWith(201);
-        // expect(res.send).toBeCalledWith('ok');
+        expect(res.statusCode).toBe(403);
     });
 
-    test.skip('회원가입 실패시, res.status(500).send(\'Could not sign up.\')를 호출합니다.', async () => {
+    test('처음 가입하는 회원이라면 회원가입에 성공합니다.', async () => {
+        Users().create.mockReturnValue(Promise.resolve({
+            signup(userEmail) {
+                return Promise.resolve(true);
+            }
+        }));
+
         await signup(req, res);
-        expect(res.status).toBeCalledWith(500);
-        // expect(res.send).toBeCalledWith('Could not sign up.');
+        expect(res.statusCode).toBe(201);
+        // expect(Users.create).toBeCalledWith(newUser);
+
     });
+
+    // const req = {
+    //     body: { userName: "ann", userEmail: "abc@naver.com",  userPw:"1234" },
+    //     // user: { id: 1, userName: "ann", userEmail: "abc@naver.com",  userPw:"1234" },
+    // };
+    // const res = {
+    //     status: jest.fn(() => res),
+    //     send: jest.fn(),
+    // };
+    // const next = jest.fn();
+    //
+    // test('이미 가입되어있다면 res.status(403)을 응답합니다.', async () => {
+    //     Users().findOne.mockReturnValue(Promise.resolve({
+    //         signup(userEmail) {
+    //             return Promise.resolve(true);
+    //         }
+    //     }));
+    //
+    //     await signup(req, res);
+    //     expect(res.status).toBeCalledWith(403);
+    //     // expect(res.send).toBeCalledWith('ok');
+    // });
+
+    test.skip('회원가입 실패시, res.status(500)을 응답합니다.', async () => {
+        const error = '테스트용 에러';
+        Users().findOne.mockReturnValue(Promise.reject(error));
+        await signup(req, res);
+        expect(res.statusCode).toBe(500);
+    });
+
+    // test.skip('회원가입 실패시, res.status(500).send(\'Could not sign up.\')를 호출합니다.', async () => {
+    //     await signup(req, res);
+    //     expect(res.statusCode).toBe(500);
+    //     // expect(res.status).toBeCalledWith(500);
+    //     // expect(res.send).toBeCalledWith('Could not sign up.');
+    // });
 });
-
-
-
 
 // test('DB에서 에러 발생 시 next(error) 호출', async () => {
 //     const error = '테스트용 에러';
