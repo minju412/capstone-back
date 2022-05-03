@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 // const csvController = require("../controllers/csv.controller");
-const resultsController = require("../controllers/results.controller");
+const resultsController = require("./results.controller");
 // const upload = require("../middlewares/upload");
 
 let routes = (app) => {

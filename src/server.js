@@ -3,13 +3,19 @@ const env = process.env;
 
 const express = require("express");
 const app = express();
+const morgan = require('morgan'); // morgan은 서버의 콘솔로그를 출력
+
+if(process.env.NODE_ENV !== 'test'){ // 테스트 환경에서는 로그없이 깔끔하게 보기 위해서
+    app.use(morgan('dev'));
+}
 
 const cors = require('cors');
-const db = require("./models");
+// const db = require("./models");
 
 // 라우터 설정
-const initResultRoutes = require("./routes/result.routes");
-const initAuthRoutes = require("./routes/auth.routes");
+const initAuthRoutes = require("./api/auth/auth.routes");
+const initCsvRoutes = require("./api/csv/csv.routes");
+const initResultRoutes = require("./api/results/result.routes");
 
 global.__basedir = __dirname + "/..";
 
@@ -42,18 +48,19 @@ app.use(passport.initialize()); // 요청 객체에 passport 설정을 심음
 app.use(passport.session()); // req.session 객체에 passport 정보를 추가 저장
 // pssport.session()이 실행되면, 세션 쿠키 정보를 바탕으로 passport/passport.index.js의 deserializeUser()가 실행된다.
 
-initResultRoutes(app);
 initAuthRoutes(app);
+initCsvRoutes(app);
+initResultRoutes(app);
 
-db.sequelize.sync()
-    .then(() => {
-        console.log('db 연결 성공');
-    })
-    .catch(console.error);
+// db.sequelize.sync()
+//     .then(() => {
+//         console.log('db 연결 성공');
+//     })
+//     .catch(console.error);
 
+// let port = env.PORT;
+// app.listen(port, () => {
+//     console.log(`Running at localhost...`);
+// });
 
-
-let port = env.PORT;
-app.listen(port, () => {
-    console.log(`Running at localhost...`);
-});
+module.exports = app; // app을 모듈로 만들어야 슈퍼테스트 가능

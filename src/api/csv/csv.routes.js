@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
-const csvController = require("../controllers/csv.controller");
-const upload = require("../middlewares/upload");
+const csvController = require("./csv.controller");
+const upload = require("../../middlewares/upload");
 
 let routes = (app) => {
     router.get("/download", csvController.download);

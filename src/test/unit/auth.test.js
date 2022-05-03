@@ -1,7 +1,7 @@
 const mockFindOne = jest.fn();
 const mockCreate = jest.fn();
 
-const { signup, signin } = require('../../controllers/auth.controller');
+const { signup, signin } = require('../../api/auth/auth.controller');
 const Users = require('../../models/user.model');
 const httpMocks = require('node-mocks-http');
 const newUser = require('../data/user.json');
@@ -15,7 +15,6 @@ jest.mock('../../models/user.model',
     ));
 
 // fn.signup.mockReturnValue({userName: "ann", userEmail: "abc@naver.com",  userPw:"1234"});
-
 
 // test('[DB 데이터 조회 테스트] 사용자 id를 통해 password 조회 테스트', async () => {
 //     const req = httpMocks.createRequest({
@@ -73,7 +72,7 @@ describe('회원가입 관련 작업', () => {
 
     test('처음 가입하는 회원이라면 회원가입에 성공합니다.', async () => {
         Users().create.mockReturnValue(Promise.resolve({
-            signup(userEmail) {
+            signup(UserName,userEmail,userPw) {
                 return Promise.resolve(true);
             }
         }));
@@ -81,30 +80,7 @@ describe('회원가입 관련 작업', () => {
         await signup(req, res);
         expect(res.statusCode).toBe(201);
         // expect(Users.create).toBeCalledWith(newUser);
-
     });
-
-    // const req = {
-    //     body: { userName: "ann", userEmail: "abc@naver.com",  userPw:"1234" },
-    //     // user: { id: 1, userName: "ann", userEmail: "abc@naver.com",  userPw:"1234" },
-    // };
-    // const res = {
-    //     status: jest.fn(() => res),
-    //     send: jest.fn(),
-    // };
-    // const next = jest.fn();
-    //
-    // test('이미 가입되어있다면 res.status(403)을 응답합니다.', async () => {
-    //     Users().findOne.mockReturnValue(Promise.resolve({
-    //         signup(userEmail) {
-    //             return Promise.resolve(true);
-    //         }
-    //     }));
-    //
-    //     await signup(req, res);
-    //     expect(res.status).toBeCalledWith(403);
-    //     // expect(res.send).toBeCalledWith('ok');
-    // });
 
     test.skip('회원가입 실패시, res.status(500)을 응답합니다.', async () => {
         const error = '테스트용 에러';
@@ -113,16 +89,4 @@ describe('회원가입 관련 작업', () => {
         expect(res.statusCode).toBe(500);
     });
 
-    // test.skip('회원가입 실패시, res.status(500).send(\'Could not sign up.\')를 호출합니다.', async () => {
-    //     await signup(req, res);
-    //     expect(res.statusCode).toBe(500);
-    //     // expect(res.status).toBeCalledWith(500);
-    //     // expect(res.send).toBeCalledWith('Could not sign up.');
-    // });
 });
-
-// test('DB에서 에러 발생 시 next(error) 호출', async () => {
-//     const error = '테스트용 에러';
-//     await signup(req, res);
-//     expect(next).toBeCalledWith(error);
-// });

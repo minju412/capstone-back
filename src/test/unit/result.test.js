@@ -1,6 +1,6 @@
 const mockFindAll = jest.fn();
 
-const { getResults, count } = require('../../controllers/results.controller');
+const { getResults, count } = require('../../api/results/results.controller');
 const Results = require('../../models/result.model');
 
 jest.mock('../../models/result.model',
