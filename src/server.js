@@ -10,7 +10,6 @@ if(process.env.NODE_ENV !== 'test'){ // 테스트 환경에서는 로그없이 �
 }
 
 const cors = require('cors');
-// const db = require("./models");
 
 // 라우터 설정
 const initAuthRoutes = require("./api/auth/auth.routes");
@@ -51,16 +50,5 @@ app.use(passport.session()); // req.session 객체에 passport 정보를 추가 
 initAuthRoutes(app);
 initCsvRoutes(app);
 initResultRoutes(app);
-
-// db.sequelize.sync()
-//     .then(() => {
-//         console.log('db 연결 성공');
-//     })
-//     .catch(console.error);
-
-// let port = env.PORT;
-// app.listen(port, () => {
-//     console.log(`Running at localhost...`);
-// });
 
 module.exports = app; // app을 모듈로 만들어야 슈퍼테스트 가능

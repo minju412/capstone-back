@@ -6,9 +6,4 @@ module.exports = () => {
         force: process.env.NODE_ENV === 'test'? true : false
     };
     return models.sequelize.sync(options);
-    // return models.sequelize.sync(options)
-    //     .then(() => {
-    //         console.log('db 연결 성공');
-    //     })
-    //     .catch(console.error);
 };
