@@ -4,6 +4,26 @@ const User = db.users;
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 
+// 사용자를 보여준다.
+const userInfo = async (req, res, next) => {
+    try {
+        if (req.user) {
+            const userWithoutPw = await User.findOne({
+                where: {id: req.user.id},
+                attributes: {
+                    exclude: ['userPw']
+                },
+            })
+            res.status(200).json(userWithoutPw);
+        } else {
+            res.status(200).json(null);
+        }
+    } catch (error) {
+        console.error(error);
+        next(error);
+    }
+};
+
 // 회원가입
 const signup = async (req, res) => {
     try{
@@ -33,7 +53,7 @@ const signup = async (req, res) => {
 };
 
 // 로그인
-const signin = (req, res, next) => {
+const login = (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
         if(err){ // 서버 에러
             console.error(err);
@@ -67,7 +87,8 @@ const logout = (req, res) => {
 };
 
 module.exports = {
+    userInfo,
     signup,
-    signin,
+    login,
     logout,
 };
