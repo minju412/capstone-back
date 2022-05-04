@@ -1,5 +1,5 @@
 const express = require("express");
-const {isLoggedIn} = require('../auth/middlewares'); // 로그인 한 사람만 허용
+const {isLoggedIn} = require('../../middlewares/authCheck'); // 로그인 한 사람만 허용
 const router = express.Router();
 
 const csvController = require("./csv.controller");

@@ -4,7 +4,7 @@ const User = db.users;
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 
-// 사용자를 보여준다.
+// 내 로그인 정보 불러오기
 const userInfo = async (req, res, next) => {
     try {
         if (req.user) {
@@ -84,6 +84,7 @@ const logout = (req, res) => {
     req.logout();
     req.session.destroy;
     res.send('ok');
+    // res.redirect("/");
 };
 
 module.exports = {

@@ -19,6 +19,7 @@ const passportConfig = require('./passport/passport.index');
 const initAuthRoutes = require("./api/auth/auth.routes");
 const initCsvRoutes = require("./api/csv/csv.routes");
 const initResultRoutes = require("./api/results/results.routes");
+const initSearchRoutes = require("./api/search/search.routes");
 
 global.__basedir = __dirname + "/..";
 
@@ -29,10 +30,12 @@ passportConfig();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
-// app.use(cors({
-//     origin: '*'
-// }));
+app.use(cors({
+    // origin: env.CLIENT_PORT,
+    origin: true,
+    credentials: true, // 쿠키 전달
+}));
+// app.use(cors());
 
 app.use(cookieParser(env.COOKIE_SECRET));
 app.use(session({
@@ -51,5 +54,6 @@ app.use(passport.session()); // req.session 객체에 passport 정보를 추가 
 initAuthRoutes(app);
 initCsvRoutes(app);
 initResultRoutes(app);
+initSearchRoutes(app);
 
 module.exports = app; // app을 모듈로 만들어야 슈퍼테스트 가능
