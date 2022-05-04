@@ -13,9 +13,8 @@ const signup = async (req, res) => {
             }
         });
         if(exUser){
-            return res.status(403).send('This email is already in use.');
+            return res.status(403).send('이미 사용중인 이메일입니다.');
         }
-
         const hashedPw = await bcrypt.hash(req.body.userPw, 12);
         await User.create({
             userName: req.body.userName,
@@ -29,10 +28,11 @@ const signup = async (req, res) => {
         res.status(500).send({
             message: "Could not sign up.",
         });
+        // next(error);
     }
 };
 
-// 로그인 (미들웨어 확장)
+// 로그인
 const signin = (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
         if(err){ // 서버 에러
@@ -42,18 +42,32 @@ const signin = (req, res, next) => {
         if(info){ // 클라이언트 에러
             return res.status(401).send(info.reason);
         }
-        return req.login(user, async(loginErr) => {
+        return req.login(user, async(loginErr) => { // 패스포트 로그인
             if(loginErr){
                 console.error(loginErr);
                 return next(loginErr);
             }
+            const userWithoutPw = await User.findOne({
+                where: {id: user.id},
+                attributes: {
+                    exclude: ['userPw'] // 보안상 패스워드는 제외하고 보내기
+                },
+            })
             // 내부적으로 쿠키 전송 ( res.setHeader('Cookie', 'csdjf...'); )
-            return res.status(200).json(user); // 사용자 정보를 프론트로 넘김
+            return res.status(200).json(userWithoutPw); // 사용자 정보를 프론트로 넘김
         });
-    })(req, res, next);
+    })(req, res, next); // passport.authenticate 미들웨어 확장
+};
+
+// 로그아웃
+const logout = (req, res) => {
+    req.logout();
+    req.session.destroy;
+    res.send('ok');
 };
 
 module.exports = {
     signup,
-    signin
+    signin,
+    logout,
 };

@@ -13,6 +13,14 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING(200),
             allowNull: false,
         },
+        realTimeStatus: { // 실시간 처리 상태
+            type: Sequelize.STRING(50),
+            allowNull: true,
+        },
+        realTimeResult: { // 실시간 처리 결과
+            type: Sequelize.STRING(200),
+            allowNull: true,
+        },
     }, {
         timestamps: false,
         charset: 'utf8',

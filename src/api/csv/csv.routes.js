@@ -1,12 +1,13 @@
 const express = require("express");
+const {isLoggedIn} = require('../auth/middlewares'); // 로그인 한 사람만 허용
 const router = express.Router();
 
 const csvController = require("./csv.controller");
 const upload = require("../../middlewares/upload");
 
 let routes = (app) => {
-    router.get("/download", csvController.download);
-    router.post("/upload", upload.single("file"), csvController.upload);
+    router.get("/download", isLoggedIn, csvController.download);
+    router.post("/upload", isLoggedIn, upload.single("file"), csvController.upload);
 
     app.use("/api/", router);
 };

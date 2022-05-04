@@ -48,7 +48,7 @@ const getResults = async (req, res) => {
         .catch((err) => {
             res.status(500).send({
                 message:
-                    err.message || "Some error occurred while retrieving results.",
+                    err.message || "결과를 가져오는 도중에 에러가 발생했습니다.",
             });
         });
 };
@@ -62,7 +62,7 @@ const count = (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(500).send({
-            message: "Could not count results.",
+            message: "결과를 카운트 할 수 없습니다.",
         });
     }
 };

@@ -11,18 +11,19 @@ if(process.env.NODE_ENV !== 'test'){ // 테스트 환경에서는 로그없이 �
 
 const cors = require('cors');
 
+// 패스포트 설정
+const passport = require('passport');
+const passportConfig = require('./passport/passport.index');
+
 // 라우터 설정
 const initAuthRoutes = require("./api/auth/auth.routes");
 const initCsvRoutes = require("./api/csv/csv.routes");
-const initResultRoutes = require("./api/results/result.routes");
+const initResultRoutes = require("./api/results/results.routes");
 
 global.__basedir = __dirname + "/..";
 
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
-
-const passport = require('passport');
-const passportConfig = require('./passport/passport.index');
 
 passportConfig();
 
