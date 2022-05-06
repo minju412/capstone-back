@@ -3,9 +3,10 @@ const {isLoggedIn} = require('../../middlewares/authCheck'); // 로그인 한 �
 const router = express.Router();
 
 const searchController = require("./search.controller");
+const passport = require("passport");
 
 let routes = (app) => {
-    router.get("/search/domain", isLoggedIn, searchController.getDomain); // 사용자가 입력한 타겟도메인 받아오기
+    router.get("/search/domain", passport.authenticate('jwt', {session: false}), searchController.getDomain); // 사용자가 입력한 타겟도메인 받아오기
 
     app.use("/api/", router);
 };

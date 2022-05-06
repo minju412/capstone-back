@@ -13,7 +13,9 @@ const cors = require('cors');
 
 // 패스포트 설정
 const passport = require('passport');
-const passportConfig = require('./passport/passport.index');
+app.use(passport.initialize());
+require('./middlewares/passport')(passport);
+// const passportConfig = require('./passport/passport.index');
 
 // 라우터 설정
 const initAuthRoutes = require("./api/auth/auth.routes");
@@ -26,7 +28,7 @@ global.__basedir = __dirname + "/..";
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 
-passportConfig();
+// passportConfig();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -47,9 +49,10 @@ app.use(session({
         secure: false,
     }
 }));
-app.use(passport.initialize()); // 요청 객체에 passport 설정을 심음
-app.use(passport.session()); // req.session 객체에 passport 정보를 추가 저장
-// pssport.session()이 실행되면, 세션 쿠키 정보를 바탕으로 passport/passport.index.js의 deserializeUser()가 실행된다.
+
+// app.use(passport.initialize()); // 요청 객체에 passport 설정을 심음
+// app.use(passport.session()); // req.session 객체에 passport 정보를 추가 저장
+//// passport.session()이 실행되면, 세션 쿠키 정보를 바탕으로 passport/passport.index.js의 deserializeUser()가 실행된다.
 
 initAuthRoutes(app);
 initCsvRoutes(app);

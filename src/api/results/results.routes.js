@@ -5,8 +5,8 @@ const router = express.Router();
 const resultsController = require("./results.controller");
 
 let routes = (app) => {
-    router.get("/results", isLoggedIn, resultsController.getResults);
-    router.get("/count", isLoggedIn, resultsController.count);
+    router.get("/results", resultsController.getResults);
+    router.get("/count", resultsController.count);
 
     app.use("/api/", router);
 };
