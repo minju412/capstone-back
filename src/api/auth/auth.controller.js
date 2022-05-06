@@ -4,7 +4,7 @@ const User = db.users;
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 
-// 내 로그인 정보 불러오기
+// 사용자 정보 받아오기
 const userInfo = async (req, res, next) => {
     try {
         if (req.user) {
@@ -42,11 +42,11 @@ const signup = async (req, res) => {
             userPw: hashedPw
         });
         // res.json();
-        res.status(201).send('ok');
+        res.status(201).send('회원가입 성공');
     } catch(error){
         console.log(error);
         res.status(500).send({
-            message: "Could not sign up.",
+            message: "회원가입 실패",
         });
         // next(error);
     }
@@ -83,7 +83,7 @@ const login = (req, res, next) => {
 const logout = (req, res) => {
     req.logout();
     req.session.destroy;
-    res.send('ok');
+    res.send('로그아웃 성공');
     // res.redirect("/");
 };
 

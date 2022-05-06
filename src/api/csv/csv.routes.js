@@ -3,7 +3,7 @@ const {isLoggedIn} = require('../../middlewares/authCheck'); // 로그인 한 �
 const router = express.Router();
 
 const csvController = require("./csv.controller");
-const upload = require("../../middlewares/upload");
+const upload = require("../../middlewares/uploadCsv");
 
 let routes = (app) => {
     router.get("/download", isLoggedIn, csvController.download);

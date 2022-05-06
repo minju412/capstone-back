@@ -7,7 +7,7 @@ const CsvParser = require("json2csv").Parser;
 const upload = async (req, res) => {
     try {
         if (req.file == undefined) {
-            return res.status(400).send("Please upload a CSV file!");
+            return res.status(400).send("파일의 형식은 csv 이어야 합니다.");
         }
         let results = [];
         let path = __basedir + "/resources/static/assets/uploads/" + req.file.filename;
@@ -24,12 +24,12 @@ const upload = async (req, res) => {
                     .then(() => {
                         res.status(200).send({
                             message:
-                                "Uploaded the file successfully: " + req.file.originalname,
+                                "파일 업로드 성공: " + req.file.originalname,
                         });
                     })
                     .catch((error) => {
                         res.status(500).send({
-                            message: "Fail to import data into database!",
+                            message: "db import 실패",
                             error: error.message,
                         });
                     });
@@ -37,7 +37,7 @@ const upload = async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(500).send({
-            message: "Could not upload the file: " + req.file.originalname,
+            message: "파일 업로드 실패: " + req.file.originalname,
         });
     }
 };
