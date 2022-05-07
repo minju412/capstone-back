@@ -6,8 +6,8 @@ const csvController = require("./csv.controller");
 const upload = require("../../middlewares/uploadCsv");
 
 let routes = (app) => {
-    router.get("/download", isLoggedIn, csvController.download);
-    router.post("/upload", isLoggedIn, upload.single("file"), csvController.upload);
+    router.get("/download", csvController.download);
+    router.post("/upload", upload.single("file"), csvController.upload);
 
     app.use("/api/", router);
 };
