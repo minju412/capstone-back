@@ -18,6 +18,7 @@ const jwt = require('jsonwebtoken');
 //     });
 // };
 
+// 사용자 정보 받아오기
 const userInfo = async (req, res, next) => {
     try {
         if (req.user) {
