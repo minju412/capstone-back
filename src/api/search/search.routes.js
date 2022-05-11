@@ -6,9 +6,8 @@ const searchController = require("./search.controller");
 const passport = require("passport");
 
 let routes = (app) => {
-    router.get("/search/domain", passport.authenticate('jwt', {session: false}), searchController.getDomain); // 사용자가 입력한 타겟도메인 받아오기
-    router.post("/search/upload", searchController.upload);
-
+    router.post("/search/", passport.authenticate('jwt', {session: false}), searchController.createNewTask); // 사용자가 입력한 타겟도메인 받아오기
+    router.get("/search/", passport.authenticate('jwt', {session: false}), searchController.getTaskResult);
     app.use("/api/", router);
 };
 
