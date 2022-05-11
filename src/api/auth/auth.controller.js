@@ -78,6 +78,7 @@ const login = (req, res) => {
         })
 };
 
+
 // 회원가입
 const signup = async (req, res) => {
     try{
