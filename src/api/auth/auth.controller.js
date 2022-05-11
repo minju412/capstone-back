@@ -78,8 +78,47 @@ const login = (req, res) => {
         })
 };
 
-
 // 회원가입
+// const signup = async (req,res) =>{
+//     try{
+//         const exUser = await User.findOne({
+//             where : {
+//                 userEmail: req.body.userEmail
+//             }
+//         });
+//         if(exUser){
+//             return res.status(403).send('이미 사용중인 이메일입니다.');
+//         }
+//         const newUser = new User({
+//             userName: req.body.userName,
+//             userEmail: req.body.userEmail,
+//             userPw: req.body.userPw,
+//             realTimeStatus: 'READY'
+//         });
+//
+//         bcrypt.genSalt(10, (err, salt) => {
+//             bcrypt.hash(newUser.userPw, salt, (err, hash) => {
+//                 if(err) throw err;
+//
+//                 newUser.userPw = hash;
+//
+//                 // newUser.save()
+//                 //     .then(user => res.json(user))
+//                 //     .catch(err => console.log(err));
+//             })
+//         })
+//
+//         await User.create(newUser);
+//     } catch(error){
+//         console.log(error);
+//         res.status(500).send({
+//             message: "회원가입 실패",
+//         });
+//         // next(error);
+//     }
+// }
+
+// 회원가입 - 실행 되는 것!
 const signup = async (req, res) => {
     try{
         const exUser = await User.findOne({
@@ -94,7 +133,8 @@ const signup = async (req, res) => {
         await User.create({
             userName: req.body.userName,
             userEmail: req.body.userEmail,
-            userPw: hashedPw
+            userPw: hashedPw,
+            realTimeStatus: 'READY'
         });
         // res.json();
         res.status(201).send('회원가입 성공');
@@ -133,14 +173,22 @@ const signup = async (req, res) => {
 //         });
 //     })(req, res, next); // passport.authenticate 미들웨어 확장
 // };
-//
-// // 로그아웃
+
+// 로그아웃 : passport-local
 // const logout = (req, res) => {
 //     req.logout();
 //     req.session.destroy;
 //     res.send('로그아웃 성공');
 //     // res.redirect("/");
 // };
+
+// 로그아웃 : passport-jwt
+const logout = res => {
+    res.cookie('token', null, {
+        maxAge: 0,
+    });
+    res.redirect('/');
+};
 
 // 권한 확인 (토큰으로 인증 받기)
 const check = async (req, res, next) => {
@@ -156,6 +204,6 @@ module.exports = {
     userInfo,
     signup,
     login,
-    // logout,
+    logout,
     check,
 };

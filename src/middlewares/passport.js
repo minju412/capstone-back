@@ -9,7 +9,7 @@ const User = db.users;
 
 const opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-opts.secretOrKey = env.JWT_SECRET_KEY,
+opts.secretOrKey = env.JWT_SECRET_KEY;
 
 module.exports = passport => {
     passport.use(new JwtStrategy(opts, (jwt_payload, done) =>{
