@@ -31,6 +31,8 @@ module.exports = (sequelize, Sequelize) => {
         charset: 'utf8',
         collate: 'utf8_general_ci', // 한글 저장
     });
-    User.associate = (db) => {};
+    User.associate = db => {
+        db.users.hasMany(db.projects,{foreignKey: "user_id"});
+    };
     return User;
 };

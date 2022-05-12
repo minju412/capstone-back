@@ -10,6 +10,12 @@ module.exports = (sequelize, Sequelize) => {
         charset: 'utf8',
         collate: 'utf8_general_ci',
     });
-    Keyword.associate = (db) => {};
+    Keyword.associate = (db) => {
+        db.keywords.belongsToMany(db.projects, {
+            through: 'Add',
+            foreignKey: "keyword_id",
+            // sourceKey: "id"
+        });
+    };
     return Keyword;
 };

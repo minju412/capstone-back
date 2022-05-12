@@ -10,6 +10,8 @@ module.exports = (sequelize, Sequelize) => {
         charset: 'utf8',
         collate: 'utf8_general_ci',
     });
-    MonitoringUrl.associate = (db) => {};
+    MonitoringUrl.associate = (db) => {
+        db.monitoringUrls.belongsTo(db.projects,{foreignKey: "project_id"});
+    };
     return MonitoringUrl;
 };
