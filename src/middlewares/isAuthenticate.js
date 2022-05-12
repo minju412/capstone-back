@@ -1,3 +1,5 @@
+// passport-jwt
+
 exports.isAuthenticate = (req, res, next) => {
     if (req.user) {
         console.log(req.user);

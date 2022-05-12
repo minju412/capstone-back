@@ -19,5 +19,8 @@ db.sequelize = sequelize;
 // 모델 추가
 db.results = require("./result.model.js")(sequelize, Sequelize);
 db.users = require("./user.model.js")(sequelize, Sequelize);
+db.projects = require("./project.model.js")(sequelize, Sequelize);
+db.keywords = require("./keyword.model.js")(sequelize, Sequelize);
+db.moniotringUrls = require("./monitoringUrl.model.js")(sequelize, Sequelize);
 
 module.exports = db;
