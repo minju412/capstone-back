@@ -102,11 +102,11 @@ const signup = async (req, res) => {
 // }
 
 // 로그아웃 : passport-jwt
-// const logout = (req, res)  => {
-//     req.logout();
-//     res.send('로그아웃 성공');
-//     // res.redirect("/");
-// };
+const logout = (req, res)  => {
+    req.logout();
+    res.send('로그아웃 성공');
+    // res.redirect("/");
+};
 
 module.exports = {
     userInfo,
