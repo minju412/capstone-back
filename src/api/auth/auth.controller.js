@@ -8,22 +8,11 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 // 사용자 정보 받아오기
-// const userInfo = (req, res) => {
-//     res.json({
-//         id: req.user.id,
-//         userName: req.user.userName,
-//         userEmail: req.user.userEmail,
-//         realTimeStatus: req.user.realTimeStatus,
-//         realTimeResult: req.user.realTimeResult,
-//     });
-// };
-
-// 사용자 정보 받아오기
 const userInfo = async (req, res, next) => {
     try {
-        if (req.user) {
+        if (req.decoded) {
             const userWithoutPw = await User.findOne({
-                where: {id: req.user.id},
+                where: {id: req.decoded.id},
                 attributes: {
                     exclude: ['userPw']
                 },
@@ -79,46 +68,6 @@ const login = (req, res) => {
 };
 
 // 회원가입
-// const signup = async (req,res) =>{
-//     try{
-//         const exUser = await User.findOne({
-//             where : {
-//                 userEmail: req.body.userEmail
-//             }
-//         });
-//         if(exUser){
-//             return res.status(403).send('이미 사용중인 이메일입니다.');
-//         }
-//         const newUser = new User({
-//             userName: req.body.userName,
-//             userEmail: req.body.userEmail,
-//             userPw: req.body.userPw,
-//             realTimeStatus: 'READY'
-//         });
-//
-//         bcrypt.genSalt(10, (err, salt) => {
-//             bcrypt.hash(newUser.userPw, salt, (err, hash) => {
-//                 if(err) throw err;
-//
-//                 newUser.userPw = hash;
-//
-//                 // newUser.save()
-//                 //     .then(user => res.json(user))
-//                 //     .catch(err => console.log(err));
-//             })
-//         })
-//
-//         await User.create(newUser);
-//     } catch(error){
-//         console.log(error);
-//         res.status(500).send({
-//             message: "회원가입 실패",
-//         });
-//         // next(error);
-//     }
-// }
-
-// 회원가입 - 실행 되는 것!
 const signup = async (req, res) => {
     try{
         const exUser = await User.findOne({
@@ -147,63 +96,22 @@ const signup = async (req, res) => {
     }
 };
 
-// // 로그인
-// const login = (req, res, next) => {
-//     passport.authenticate('local', (err, user, info) => {
-//         if(err){ // 서버 에러
-//             console.error(err);
-//             return next(err);
-//         }
-//         if(info){ // 클라이언트 에러
-//             return res.status(401).send(info.reason);
-//         }
-//         return req.login(user, async(loginErr) => { // 패스포트 로그인
-//             if(loginErr){
-//                 console.error(loginErr);
-//                 return next(loginErr);
-//             }
-//             const userWithoutPw = await User.findOne({
-//                 where: {id: user.id},
-//                 attributes: {
-//                     exclude: ['userPw'] // 보안상 패스워드는 제외하고 보내기
-//                 },
-//             })
-//             // 내부적으로 쿠키 전송 ( res.setHeader('Cookie', 'csdjf...'); )
-//             return res.status(200).json(userWithoutPw); // 사용자 정보를 프론트로 넘김
-//         });
-//     })(req, res, next); // passport.authenticate 미들웨어 확장
-// };
+// 유효한 사용자인지 확인 (토큰 이용)
+// const confirm = (req, res, next)=>{
+//     res.json(req.decoded);
+// }
 
-// 로그아웃 : passport-local
-// const logout = (req, res) => {
+// 로그아웃 : passport-jwt
+// const logout = (req, res)  => {
 //     req.logout();
-//     req.session.destroy;
 //     res.send('로그아웃 성공');
 //     // res.redirect("/");
 // };
-
-// 로그아웃 : passport-jwt
-const logout = res => {
-    res.cookie('token', null, {
-        maxAge: 0,
-    });
-    res.redirect('/');
-};
-
-// 권한 확인 (토큰으로 인증 받기)
-const check = async (req, res, next) => {
-    try {
-        res.json({result: true});
-    } catch (error) {
-        console.error(error);
-        next(error);
-    }
-};
 
 module.exports = {
     userInfo,
     signup,
     login,
     logout,
-    check,
+    // confirm,
 };
