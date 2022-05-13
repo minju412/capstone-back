@@ -5,14 +5,16 @@ const db = require("../../models");
 const User = db.users;
 
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const jwt = require('../../jwt/jwt-utils')
+const redisClient = require('../../jwt/redis')
+// const jwt = require('jsonwebtoken');
 
 // 사용자 정보 받아오기
 const userInfo = async (req, res, next) => {
     try {
-        if (req.decoded) {
+        if (req.id) {
             const userWithoutPw = await User.findOne({
-                where: {id: req.decoded.id},
+                where: {id: req.id},
                 attributes: {
                     exclude: ['userPw']
                 },
@@ -45,23 +47,41 @@ const login = (req, res) => {
                 .then(isMatch => {
                     if(isMatch) {
                         // 회원 비밀번호가 일치할 때
-                        // JWT PAYLOAD 생성
-                        const payload = {
-                            id: user.id,
-                            userName: user.userName
-                        };
+                        // access token과 refresh token을 발급한다.
+                        const accessToken = jwt.sign(user);
+                        const refreshToken = jwt.refresh();
 
-                        // JWT 토큰 생성
-                        // 1시간 동안 유효
-                        jwt.sign(payload, env.JWT_SECRET_KEY, { expiresIn: 3600 }, (err, token) => {
-                            res.json({
-                                success: true,
-                                // token: token
-                                token: 'Bearer ' + token
-                            })
+                        // 발급한 refresh token을 redis에 key를 user의 id로 하여 저장한다.
+                        redisClient.set(user.id, refreshToken);
+
+                        res.status(200).send({ // client에게 토큰 모두를 반환한다.
+                            ok: true,
+                            data: {
+                                accessToken,
+                                refreshToken,
+                            },
                         });
-                    } else {
-                        return res.status(400).send('패스워드가 일치하지 않습니다.');
+
+                        // // JWT PAYLOAD 생성
+                        // const payload = {
+                        //     id: user.id,
+                        //     userName: user.userName
+                        // };
+                        // // JWT 토큰 생성
+                        // // 1시간 동안 유효
+                        // jwt.sign(payload, env.JWT_SECRET_KEY, { expiresIn: 3600 }, (err, token) => {
+                        //     res.json({
+                        //         success: true,
+                        //         // token: token
+                        //         token: 'Bearer ' + token
+                        //     })
+                        // });
+
+                    } else{
+                        res.status(401).send({
+                            ok: false,
+                            message: '패스워드가 일치하지 않습니다.',
+                        });
                     }
                 });
         })
@@ -97,21 +117,21 @@ const signup = async (req, res) => {
 };
 
 // 유효한 사용자인지 확인 (토큰 이용)
-// const confirm = (req, res, next)=>{
-//     res.json(req.decoded);
-// }
+const confirm = (req, res, next)=>{
+    res.json({userId: req.id,userName: req.userName});
+}
 
-// 로그아웃 : passport-jwt
-const logout = (req, res)  => {
-    req.logout();
-    res.send('로그아웃 성공');
-    // res.redirect("/");
-};
+// 로그아웃
+// const logout = (req, res)  => {
+//     req.logout();
+//     res.send('로그아웃 성공');
+//     // res.redirect("/");
+// };
 
 module.exports = {
     userInfo,
     signup,
     login,
     logout,
-    // confirm,
+    confirm,
 };
