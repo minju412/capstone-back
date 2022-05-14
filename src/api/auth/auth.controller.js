@@ -121,17 +121,9 @@ const confirm = (req, res, next)=>{
     res.json({userId: req.id,userName: req.userName});
 }
 
-// 로그아웃
-// const logout = (req, res)  => {
-//     req.logout();
-//     res.send('로그아웃 성공');
-//     // res.redirect("/");
-// };
-
 module.exports = {
     userInfo,
     signup,
     login,
-    logout,
     confirm,
 };
