@@ -1,91 +1,11 @@
-require('dotenv').config();
-const env = process.env;
-
 const db = require("../../models");
 const User = db.users;
-
 const bcrypt = require('bcrypt');
-const jwt = require('../../jwt/jwt-utils')
+
+const jwt_util = require('../../jwt/jwt-util');
+const { sign, verify, refreshVerify } = require('../../jwt/jwt-util');
+const jwt = require('jsonwebtoken');
 const redisClient = require('../../jwt/redis')
-// const jwt = require('jsonwebtoken');
-
-// 사용자 정보 받아오기
-const userInfo = async (req, res, next) => {
-    try {
-        if (req.id) {
-            const userWithoutPw = await User.findOne({
-                where: {id: req.id},
-                attributes: {
-                    exclude: ['userPw']
-                },
-            })
-            res.status(200).json(userWithoutPw);
-        } else {
-            res.status(200).json(null);
-        }
-    } catch (error) {
-        console.error(error);
-        next(error);
-    }
-};
-
-// 로그인
-const login = (req, res) => {
-    // email로 회원 찾기
-    User.findOne({
-        where : {
-            userEmail: req.body.userEmail
-        }
-    })
-        .then(user => {
-            if(!user){
-                return res.status(400).send('해당하는 회원이 존재하지 않습니다.');
-            }
-
-            // 패스워드 확인
-            bcrypt.compare(req.body.userPw, user.userPw)
-                .then(isMatch => {
-                    if(isMatch) {
-                        // 회원 비밀번호가 일치할 때
-                        // access token과 refresh token을 발급한다.
-                        const accessToken = jwt.sign(user);
-                        const refreshToken = jwt.refresh();
-
-                        // 발급한 refresh token을 redis에 key를 user의 id로 하여 저장한다.
-                        redisClient.set(user.id, refreshToken);
-
-                        res.status(200).send({ // client에게 토큰 모두를 반환한다.
-                            ok: true,
-                            data: {
-                                accessToken,
-                                refreshToken,
-                            },
-                        });
-
-                        // // JWT PAYLOAD 생성
-                        // const payload = {
-                        //     id: user.id,
-                        //     userName: user.userName
-                        // };
-                        // // JWT 토큰 생성
-                        // // 1시간 동안 유효
-                        // jwt.sign(payload, env.JWT_SECRET_KEY, { expiresIn: 3600 }, (err, token) => {
-                        //     res.json({
-                        //         success: true,
-                        //         // token: token
-                        //         token: 'Bearer ' + token
-                        //     })
-                        // });
-
-                    } else{
-                        res.status(401).send({
-                            ok: false,
-                            message: '패스워드가 일치하지 않습니다.',
-                        });
-                    }
-                });
-        })
-};
 
 // 회원가입
 const signup = async (req, res) => {
@@ -116,14 +36,152 @@ const signup = async (req, res) => {
     }
 };
 
+// 로그인
+const login = (req, res) => {
+    // email로 회원 찾기
+    User.findOne({
+        where : {
+            userEmail: req.body.userEmail
+        }
+    })
+        .then(user => {
+            if(!user){
+                return res.status(400).send('해당하는 회원이 존재하지 않습니다.');
+            }
+
+            // 패스워드 확인
+            bcrypt.compare(req.body.userPw, user.userPw)
+                .then(isMatch => {
+                    if(isMatch) {
+                        // 회원 비밀번호가 일치할 때
+                        // access token과 refresh token을 발급한다.
+                        const accessToken = jwt_util.sign(user);
+                        const refreshToken = jwt_util.refresh();
+
+                        // 발급한 refresh token을 redis에 key를 user의 id로 하여 저장한다.
+                        redisClient.set(user.id, refreshToken);
+
+                        res.status(200).send({ // client에게 토큰 모두를 반환한다.
+                            ok: true,
+                            data: {
+                                accessToken,
+                                refreshToken,
+                            },
+                        });
+
+                    } else{
+                        res.status(401).send({
+                            ok: false,
+                            message: '패스워드가 일치하지 않습니다.',
+                        });
+                    }
+                });
+        })
+};
+
+// access token 재발급 (클라이언트는 access token과 refresh token을 둘 다 헤더에 담아서 요청)
+const refresh = async (req, res) => {
+    // access token과 refresh token의 존재 유무를 체크한다.
+    console.log(req.headers.authorization)
+    if (req.headers.authorization && req.headers.refresh) {
+        const authToken = req.headers.authorization;
+        const refreshToken = req.headers.refresh;
+
+        // access token 검증 -> expired여야 함.
+        const authResult = verify(authToken);
+
+        // access token 디코딩하여 user의 정보를 가져온다.
+        const decoded = jwt.decode(authToken);
+
+        // 디코딩 결과가 없으면 권한이 없음을 응답.
+        if (decoded === null) {
+            res.status(401).send({
+                ok: false,
+                message: 'No authorized!',
+            });
+        }
+
+        // access token의 decoding 된 값에서 유저의 id를 가져와 refresh token을 검증한다.
+        let user = null;
+        try {
+            user = User.findOne({
+                where : {
+                    id: decoded.id,
+                }
+            })
+        } catch (err) {
+            res.status(401).send({
+                ok: false,
+                message: err.message,
+            });
+        }
+
+        const refreshResult = refreshVerify(refreshToken, decoded.id);
+
+        // 재발급을 위해서는 access token이 만료되어 있어야함.
+        if (authResult.ok === false && authResult.message === 'jwt expired') {
+            // 1. access token이 만료되고, refresh token도 만료 된 경우 => 새로 로그인해야합니다.
+            if (refreshResult.ok === false) {
+                res.status(401).send({
+                    ok: false,
+                    message: 'No authorized!',
+                });
+            } else {
+                // 2. access token이 만료되고, refresh token은 만료되지 않은 경우 => 새로운 access token을 발급
+                const newAccessToken = sign(user);
+
+                res.status(200).send({ // 새로 발급한 access token과 원래 있던 refresh token 모두 클라이언트에게 반환.
+                    ok: true,
+                    data: {
+                        accessToken: newAccessToken,
+                        refreshToken,
+                    },
+                });
+            }
+        } else {
+            // 3. access token이 만료되지 않은경우 => refresh 할 필요가 없음.
+            res.status(400).send({
+                ok: false,
+                message: 'Acess token is not expired!',
+            });
+        }
+    } else { // access token 또는 refresh token이 헤더에 없는 경우
+        res.status(400).send({
+            ok: false,
+            message: 'Access token and refresh token are need for refresh!',
+        });
+    }
+};
+
+// 사용자 정보 받아오기
+const userInfo = async (req, res, next) => {
+    try {
+        if (req.id) {
+            const userWithoutPw = await User.findOne({
+                where: {id: req.id},
+                attributes: {
+                    exclude: ['userPw']
+                },
+            })
+            res.status(200).json(userWithoutPw);
+        } else {
+            res.status(200).json(null);
+        }
+    } catch (error) {
+        console.error(error);
+        next(error);
+    }
+};
+
 // 유효한 사용자인지 확인 (토큰 이용)
 const confirm = (req, res, next)=>{
     res.json({userId: req.id,userName: req.userName});
 }
 
 module.exports = {
-    userInfo,
     signup,
     login,
+    refresh,
+    userInfo,
     confirm,
 };
