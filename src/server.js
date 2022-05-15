@@ -22,6 +22,7 @@ const initAuthRoutes = require("./api/auth/auth.routes");
 const initCsvRoutes = require("./api/csv/csv.routes");
 const initResultRoutes = require("./api/results/results.routes");
 const initSearchRoutes = require("./api/search/search.routes");
+const initProjectRoutes = require("./api/project/project.routes");
 
 global.__basedir = __dirname + "/..";
 
@@ -58,5 +59,6 @@ initAuthRoutes(app);
 initCsvRoutes(app);
 initResultRoutes(app);
 initSearchRoutes(app);
+initProjectRoutes(app);
 
 module.exports = app; // app을 모듈로 만들어야 슈퍼테스트 가능

@@ -11,7 +11,7 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: true,
             comment: "프로젝트 설명",
         },
-        target_domain: {
+        targetDomain: {
             type: Sequelize.STRING(200),
             allowNull: true,
             comment: "타겟 도메인",
@@ -25,7 +25,7 @@ module.exports = (sequelize, Sequelize) => {
         db.projects.hasMany(db.monitoringUrls,{foreignKey: "project_id"});
         db.projects.hasMany(db.monitoringResults,{foreignKey: "project_id"});
 
-        db.projects.belongsTo(db.users, {foreignKey: "user_id"});
+        db.projects.belongsTo(db.users, {foreignKey: "user_id"}); // projects.addUser, projects.removeUser
         db.projects.belongsToMany(db.keywords, {
             through: 'Add',
             foreignKey: "project_id",
