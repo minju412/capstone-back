@@ -1,7 +1,7 @@
 module.exports = (sequelize, Sequelize) => {
     const Keyword = sequelize.define('Keyword', {
         keyword: {
-            type: Sequelize.STRING(200),
+            type: Sequelize.JSON,
             allowNull: true,
             comment: "키워드",
         },
@@ -13,7 +13,7 @@ module.exports = (sequelize, Sequelize) => {
     Keyword.associate = (db) => {
         db.keywords.belongsToMany(db.projects, {
             through: 'Add',
-            as: 'project', // keyword.addProjects, keyword.removeProjects: 키워드에 프로젝트를 추가/제거
+            as: 'Project', // keyword.addProjects, keyword.removeProjects: 키워드에 프로젝트를 추가/제거
             foreignKey: "keyword_id",
             // sourceKey: "id"
         });
