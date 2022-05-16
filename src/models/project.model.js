@@ -22,13 +22,13 @@ module.exports = (sequelize, Sequelize) => {
         collate: 'utf8_general_ci',
     });
     Project.associate = db => {
-        db.projects.hasMany(db.monitoringUrls,{foreignKey: "project_id"});
+        db.projects.hasMany(db.monitoringUrls,{foreignKey: "project_id"}); // project.addMonitoringUrl
         db.projects.hasMany(db.monitoringResults,{foreignKey: "project_id"});
 
         db.projects.belongsTo(db.users, {foreignKey: "user_id"}); // projects.addUser, projects.removeUser
         db.projects.belongsToMany(db.keywords, {
             through: 'Add',
-            as: 'Keyword', // project.addKeywords, project.removeKeywords: 프로젝트에 키워드를 추가/제거
+            as: 'Keyword', // project.addKeyword, project.removeKeyword: 프로젝트에 키워드를 추가/제거
             foreignKey: "project_id",
             // sourceKey: "id"
         });

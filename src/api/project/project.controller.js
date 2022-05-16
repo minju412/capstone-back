@@ -1,6 +1,7 @@
 const db = require("../../models");
 const Project = db.projects;
 const Keyword = db.keywords;
+const Url = db.monitoringUrls;
 
 // 프로젝트 생성
 const createProject = async (req, res) => {
@@ -116,7 +117,7 @@ const createKeyword = async (req, res) => {
                 });
             }
 
-            await project.addKeyword(keyword.id); // project의 키워드로 req.body.keyword를 추가한다.
+            await project.addKeyword(keyword.id); // Add 테이블(through table)의 project_id와 keyword_id에 값을 삽입한다.
             res.status(200).json({ ProjectId: parseInt(req.params.projectId, 10) });
         } else{
             res.status(403).send({
@@ -126,15 +127,51 @@ const createKeyword = async (req, res) => {
     } catch(error){
         console.log(error);
         res.status(500).send({
-            message: "키워드 생성 실패",
+            message: "키워드 추가 실패",
         });
     }
 };
 
+// 모니터링 url 추가
+const createUrl = async (req,res) => {
+    try{
+        const project = await Project.findOne({
+            where: {
+                id: req.params.projectId,
+                user_id: req.id
+            }
+        });
+        if(project) {
+            let url = await Url.findOne({
+                where: {
+                    url: req.body.url,
+                },
+            });
+            if (!url){
+                url = await Url.create({
+                    url: req.body.url,
+                });
+            }
+
+            await project.addMonitoringUrl(url.id); // MonitoringUrl 테이블의 project_id(FK)에 값을 삽입한다.
+            res.status(200).json({ ProjectId: parseInt(req.params.projectId, 10) });
+        } else{
+            res.status(403).send({
+                message: "존재하지 않는 프로젝트입니다.",
+            });
+        }
+    } catch(error){
+        console.log(error);
+        res.status(500).send({
+            message: "모니터링 url 추가 실패",
+        });
+    }
+}
 
 module.exports = {
     createProject,
     patchProject,
     deleteProject,
     createKeyword,
+    createUrl,
 };
