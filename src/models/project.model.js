@@ -28,6 +28,7 @@ module.exports = (sequelize, Sequelize) => {
         db.projects.belongsTo(db.users, {foreignKey: "user_id"}); // projects.addUser, projects.removeUser
         db.projects.belongsToMany(db.keywords, {
             through: 'Add',
+            as: 'keyword', // project.addKeywords, project.removeKeywords: 프로젝트에 키워드를 추가/제거
             foreignKey: "project_id",
             // sourceKey: "id"
         });

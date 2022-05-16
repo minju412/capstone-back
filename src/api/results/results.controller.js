@@ -54,17 +54,16 @@ const getResults = async (req, res) => {
 };
 
 const count = (req, res) => {
-    try {
-        db.sequelize.query("SELECT category, COUNT(title) AS count FROM Results GROUP BY category")
+    db.sequelize.query("SELECT category, COUNT(title) AS count FROM Results GROUP BY category")
         .then(data => {
             res.status(200).json(data[0]);
         })
-    } catch (error) {
-        console.log(error);
-        res.status(500).send({
-            message: "결과를 카운트 할 수 없습니다.",
-        });
-    }
+        .catch(err => {
+            console.log(err);
+            res.status(500).send({
+                message: "결과를 카운트 할 수 없습니다.",
+            });
+        })
 };
 
 module.exports = {

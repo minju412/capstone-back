@@ -1,7 +1,7 @@
 const db = require("../../models");
 const Project = db.projects;
 
-// 프로젝트를 생성 -> db에 이름,설명,타겟도메인 추가
+// 프로젝트 생성
 const createProject = async (req, res) => {
     try{
         const project = await Project.create({
@@ -20,6 +20,32 @@ const createProject = async (req, res) => {
     }
 };
 
+// 프로젝트 제거
+const deleteProject = async (req, res) => {
+    try{
+        const project = await Project.destroy({
+            where: {
+                id: req.params.projectId,
+                user_id: req.id
+            }
+        });
+        if (project){
+            res.json({ ProjectId: req.params.projectId });
+        }
+        else{
+            res.status(400).send({
+                message: "프로젝트가 존재하지 않거나 권한이 없습니다.",
+            });
+        }
+    } catch(error){
+        console.log(error);
+        res.status(500).send({
+            message: "프로젝트 제거 실패",
+        });
+    }
+};
+
 module.exports = {
     createProject,
+    deleteProject,
 };

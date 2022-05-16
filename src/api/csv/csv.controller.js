@@ -43,7 +43,8 @@ const upload = async (req, res) => {
 };
 
 const download = (req, res) => {
-    Result.findAll().then((objs) => {
+    Result.findAll()
+        .then((objs) => {
         let results = [];
 
         objs.forEach((obj) => {

@@ -40,19 +40,19 @@ const signup = async (req, res) => {
 const login = (req, res) => {
     // email로 회원 찾기
     User.findOne({
-        where : {
+        where: {
             userEmail: req.body.userEmail
         }
     })
         .then(user => {
-            if(!user){
+            if (!user) {
                 return res.status(400).send('해당하는 회원이 존재하지 않습니다.');
             }
 
             // 패스워드 확인
             bcrypt.compare(req.body.userPw, user.userPw)
                 .then(isMatch => {
-                    if(isMatch) {
+                    if (isMatch) {
                         // 회원 비밀번호가 일치할 때
                         // access token과 refresh token을 발급한다.
                         const accessToken = jwt_util.sign(user);
@@ -69,7 +69,7 @@ const login = (req, res) => {
                             },
                         });
 
-                    } else{
+                    } else {
                         res.status(401).send({
                             ok: false,
                             message: '패스워드가 일치하지 않습니다.',
