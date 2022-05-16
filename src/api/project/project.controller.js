@@ -3,6 +3,30 @@ const Project = db.projects;
 const Keyword = db.keywords;
 const Url = db.monitoringUrls;
 
+// 생성한 프로젝트 목록 확인
+const viewProjectList = async (req, res) => {
+    // pagination
+    const paged = req.query.paged;
+    const _limit = 10;
+    const _offset = (paged-1) * _limit; // 1페이지부터 시작
+
+    try{
+        const project_list = await Project.findAll({
+            where: {
+                user_id: req.id
+            },
+            limit:_limit,
+            offset:_offset
+        })
+        res.status(200).json(project_list);
+    } catch(error){
+        console.log(error);
+        res.status(500).send({
+            message: "프로젝트 리스트 조회 실패",
+        });
+    }
+};
+
 // 프로젝트 생성
 const createProject = async (req, res) => {
     try{
@@ -169,6 +193,7 @@ const createUrl = async (req,res) => {
 }
 
 module.exports = {
+    viewProjectList,
     createProject,
     patchProject,
     deleteProject,
