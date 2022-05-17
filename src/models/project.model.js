@@ -14,6 +14,7 @@ module.exports = (sequelize, Sequelize) => {
         targetDomain: {
             type: Sequelize.STRING(200),
             allowNull: true,
+            unique: true,
             comment: "타겟 도메인",
         },
     }, {

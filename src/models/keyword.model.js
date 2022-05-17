@@ -1,7 +1,7 @@
 module.exports = (sequelize, Sequelize) => {
     const Keyword = sequelize.define('Keyword', {
         keyword: {
-            type: Sequelize.JSON,
+            type: Sequelize.STRING(200),
             allowNull: true,
             comment: "키워드",
         },
