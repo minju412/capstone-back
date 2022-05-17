@@ -266,6 +266,80 @@ const deleteUrl = async (req,res) => {
     }
 }
 
+// 프로젝트 설정 확인 (모니터링Url 리스트)
+const viewUrlList = async (req,res) => {
+    // pagination
+    const paged = req.query.paged;
+    const _limit = 10;
+    const _offset = (paged-1) * _limit; // 1페이지부터 시작
+
+    try{
+        const project = await Project.findOne({
+            where: {
+                id: req.params.projectId,
+                user_id: req.id
+            }
+        });
+        if(project) {
+            const url_list = await Url.findAll({
+                where: {
+                    project_id: req.params.projectId
+                },
+                attributes: ['url'],
+                limit:_limit,
+                offset:_offset
+            })
+            res.status(200).json(url_list);
+        } else{
+            res.status(403).send({
+                message: "존재하지 않는 프로젝트입니다.",
+            });
+        }
+    } catch(error){
+        console.log(error);
+        res.status(500).send({
+            message: "모니터링 url 조회 실패",
+        });
+    }
+}
+
+// 프로젝트 설정 확인 (키워드 리스트)
+const viewKeywordList = async (req,res) => {
+    // pagination
+    const paged = req.query.paged;
+    const _limit = 10;
+    const _offset = (paged-1) * _limit; // 1페이지부터 시작
+
+    try{
+        const project = await Project.findOne({
+            where: {
+                id: req.params.projectId,
+                user_id: req.id
+            }
+        });
+        if(project) {
+            const keyword_list = await project.getKeyword({ // through table에 매칭되어있는 키워드를 가져오기
+                attributes: ['keyword'],
+                limit:_limit,
+                offset:_offset
+            });
+            // const keyword_list = await project.getKeyword();
+            res.status(200).json(keyword_list);
+        } else{
+            res.status(403).send({
+                message: "존재하지 않는 프로젝트입니다.",
+            });
+        }
+    } catch(error){
+        console.log(error);
+        res.status(500).send({
+            message: "모니터링 url 조회 실패",
+        });
+    }
+}
+
+
+
 // 프로젝트 설정 (모니터링 url)
 // const setProject = async (req, res) => {
 //     try{
@@ -320,5 +394,7 @@ module.exports = {
     deleteKeyword,
     createUrl,
     deleteUrl,
+    viewUrlList,
+    viewKeywordList,
     // setProject,
 };
