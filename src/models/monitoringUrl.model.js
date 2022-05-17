@@ -1,7 +1,7 @@
 module.exports = (sequelize, Sequelize) => {
     const MonitoringUrl = sequelize.define('MonitoringUrl', {
         url: {
-            type: Sequelize.STRING(200),
+            type: Sequelize.JSON,
             allowNull: true,
             comment: "모니터링 url",
         },

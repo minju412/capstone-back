@@ -91,7 +91,7 @@ const patchProject = async (req, res) => {
     }
 };
 
-// 프로젝트 설정 (타겟도메인, 모니터링 url, 키워드)
+// 프로젝트 설정 (타겟도메인, 모니터링 url)
 const setProject = async (req, res) => {
     try{
         const project = await Project.findOne({
@@ -108,19 +108,6 @@ const setProject = async (req, res) => {
                 },
                 { where: { id: req.params.projectId }}
             );
-
-            // 키워드 설정
-            let keyword = await Keyword.findOne({
-                where: {
-                    keyword: req.body.keyword,
-                },
-            });
-            if (!keyword){
-                keyword = await Keyword.create({
-                    keyword: req.body.keyword,
-                });
-            }
-            await project.addKeyword(keyword.id); // Add 테이블(through table)의 project_id와 keyword_id에 값을 삽입한다.
 
             // 모니터링 url 설정
             let url = await Url.findOne({
@@ -149,6 +136,41 @@ const setProject = async (req, res) => {
     }
 };
 
+// 키워드 추가 (키워드 추가는 필수X)
+const createKeyword = async (req, res) => {
+    try{
+        const project = await Project.findOne({
+            where: {
+                id: req.params.projectId,
+                user_id: req.id
+            }
+        });
+        if(project) {
+            let keyword = await Keyword.findOne({
+                where: {
+                    keyword: req.body.keyword,
+                },
+            });
+            if (!keyword){
+                keyword = await Keyword.create({
+                    keyword: req.body.keyword,
+                });
+            }
+
+            await project.addKeyword(keyword.id); // Add 테이블(through table)의 project_id와 keyword_id에 값을 삽입한다.
+            res.status(200).json({ ProjectId: parseInt(req.params.projectId, 10) });
+        } else{
+            res.status(403).send({
+                message: "존재하지 않는 프로젝트입니다.",
+            });
+        }
+    } catch(error){
+        console.log(error);
+        res.status(500).send({
+            message: "키워드 추가 실패",
+        });
+    }
+};
 
 // 프로젝트 제거
 const deleteProject = async (req, res) => {
@@ -178,10 +200,13 @@ const deleteProject = async (req, res) => {
     }
 };
 
+
+
 module.exports = {
     viewProjectList,
     createProject,
     patchProject,
     deleteProject,
     setProject,
+    createKeyword,
 };
