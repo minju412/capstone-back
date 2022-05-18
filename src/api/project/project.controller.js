@@ -121,7 +121,7 @@ const deleteProject = async (req, res) => {
     }
 };
 
-// 키워드 추가 (키워드 추가는 필수X)
+// 키워드 추가
 const createKeyword = async (req, res) => {
     try{
         const project = await Project.findOne({
@@ -266,12 +266,12 @@ const deleteUrl = async (req,res) => {
     }
 }
 
-// 프로젝트 설정 확인 (모니터링Url 리스트)
+// 모니터링Url 리스트 확인
 const viewUrlList = async (req,res) => {
     // pagination
-    const paged = req.query.paged;
-    const _limit = 10;
-    const _offset = (paged-1) * _limit; // 1페이지부터 시작
+    // const paged = req.query.paged;
+    // const _limit = 10;
+    // const _offset = (paged-1) * _limit; // 1페이지부터 시작
 
     try{
         const project = await Project.findOne({
@@ -286,8 +286,8 @@ const viewUrlList = async (req,res) => {
                     project_id: req.params.projectId
                 },
                 attributes: ['url'],
-                limit:_limit,
-                offset:_offset
+                // limit:_limit,
+                // offset:_offset
             })
             res.status(200).json(url_list);
         } else{
@@ -303,12 +303,12 @@ const viewUrlList = async (req,res) => {
     }
 }
 
-// 프로젝트 설정 확인 (키워드 리스트)
+// 키워드 리스트 확인
 const viewKeywordList = async (req,res) => {
     // pagination
-    const paged = req.query.paged;
-    const _limit = 10;
-    const _offset = (paged-1) * _limit; // 1페이지부터 시작
+    // const paged = req.query.paged;
+    // const _limit = 10;
+    // const _offset = (paged-1) * _limit; // 1페이지부터 시작
 
     try{
         const project = await Project.findOne({
@@ -320,10 +320,9 @@ const viewKeywordList = async (req,res) => {
         if(project) {
             const keyword_list = await project.getKeyword({ // through table에 매칭되어있는 키워드를 가져오기
                 attributes: ['keyword'],
-                limit:_limit,
-                offset:_offset
+                // limit:_limit,
+                // offset:_offset
             });
-            // const keyword_list = await project.getKeyword();
             res.status(200).json(keyword_list);
         } else{
             res.status(403).send({
@@ -338,53 +337,6 @@ const viewKeywordList = async (req,res) => {
     }
 }
 
-
-
-// 프로젝트 설정 (모니터링 url)
-// const setProject = async (req, res) => {
-//     try{
-//         const project = await Project.findOne({
-//             where: {
-//                 id: req.params.projectId,
-//                 user_id: req.id
-//             }
-//         });
-//         if(project) {
-//             // 타겟도메인 설정
-//             await Project.update(
-//                 {
-//                     targetDomain: req.body.targetDomain,
-//                 },
-//                 { where: { id: req.params.projectId }}
-//             );
-//
-//             // 모니터링 url 설정
-//             let url = await Url.findOne({
-//                 where: {
-//                     url: req.body.url,
-//                 },
-//             });
-//             if (!url){
-//                 url = await Url.create({
-//                     url: req.body.url,
-//                 });
-//             }
-//             await project.addMonitoringUrl(url.id); // MonitoringUrl 테이블의 project_id(FK)에 값을 삽입한다.
-//
-//             res.status(200).json({ ProjectId: parseInt(req.params.projectId, 10) });
-//         } else{
-//             res.status(403).send({
-//                 message: "존재하지 않는 프로젝트입니다.",
-//             });
-//         }
-//     } catch(error){
-//         console.log(error);
-//         res.status(500).send({
-//             message: "프로젝트 설정 실패",
-//         });
-//     }
-// };
-
 module.exports = {
     viewProjectList,
     createProject,
@@ -396,5 +348,4 @@ module.exports = {
     deleteUrl,
     viewUrlList,
     viewKeywordList,
-    // setProject,
 };
