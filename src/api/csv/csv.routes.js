@@ -5,10 +5,10 @@ const csvController = require("./csv.controller");
 const upload = require("../../middlewares/uploadCsv");
 
 let routes = (app) => {
-    router.get("/download", csvController.download);
-    router.post("/upload", upload.single("file"), csvController.upload);
+    router.get("/", csvController.download); // csv 파일 다운로드
+    router.post("/", upload.single("file"), csvController.upload); // csv 파일 업로드
 
-    app.use("/api/", router);
+    app.use("/csv/", router);
 };
 
 module.exports = routes;

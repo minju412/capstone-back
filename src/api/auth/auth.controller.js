@@ -178,7 +178,7 @@ const userInfo = async (req, res, next) => {
 };
 
 // 유효한 사용자인지 확인 (토큰 이용)
-const confirm = (req, res, next)=>{
+const confirm = (req, res)=>{
     res.json({userId: req.id,userName: req.userName});
 }
 

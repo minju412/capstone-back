@@ -4,10 +4,10 @@ const router = express.Router();
 const resultsController = require("./results.controller");
 
 let routes = (app) => {
-    router.get("/results", resultsController.getResults);
-    router.get("/count", resultsController.count);
+    router.get("/", resultsController.getResults);
+    router.get("/number", resultsController.count);
 
-    app.use("/api/", router);
+    app.use("/results/", router);
 };
 
 module.exports = routes;
