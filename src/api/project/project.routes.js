@@ -17,8 +17,8 @@ let routes = (app) => {
 
     router.get("/:projectId/url", authJwt, projectController.viewUrlList); // GET project/1/url : 모니터링Url 리스트 확인
     router.post("/:projectId/url", authJwt, projectController.createUrl); // POST project/1/url : 모니터링Url 추가
+    router.patch("/:projectId/url", authJwt, projectController.patchUrl); // PATCH project/1/url : 모니터링Url 수정
     router.delete("/:projectId/url", authJwt, projectController.deleteUrl); // DELETE project/1/url : 모니터링Url 삭제
-
 
     app.use("/project/", router);
 };

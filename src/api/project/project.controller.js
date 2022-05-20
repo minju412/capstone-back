@@ -229,6 +229,48 @@ const createUrl = async (req, res) => {
     }
 };
 
+// 모니터링 url 수정
+const patchUrl = async (req, res) => {
+    try{
+        const project = await Project.findOne({
+            where: {
+                id: req.params.projectId,
+                user_id: req.id
+            }
+        });
+        if(project) {
+            let url = await Url.findOne({
+                where: {
+                    url: req.body.oldUrl,
+                    project_id: req.params.projectId
+                },
+            });
+            if (url){
+                await Url.update(
+                    {
+                        url: req.body.newUrl,
+                    },
+                    { where: { id: url.id }}
+                );
+                res.status(200).send('모니터링 url 수정 성공');
+            } else{
+                res.status(403).send({
+                    message: "존재하지 않는 url입니다.",
+                });
+            }
+        } else{
+            res.status(403).send({
+                message: "존재하지 않는 프로젝트입니다.",
+            });
+        }
+    } catch(error){
+        console.log(error);
+        res.status(500).send({
+            message: "모니터링 url 수정 실패",
+        });
+    }
+};
+
 // 모니터링 url 삭제
 const deleteUrl = async (req,res) => {
     try{
@@ -348,4 +390,5 @@ module.exports = {
     deleteUrl,
     viewUrlList,
     viewKeywordList,
+    patchUrl
 };
