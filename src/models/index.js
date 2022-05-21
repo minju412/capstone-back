@@ -1,5 +1,9 @@
-const dbConfig = require("../config/config.js");
 const Sequelize = require("sequelize");
+
+const env = process.env.NODE_ENV || 'development';
+const dbConfig = require("../config/config")[env];
+const db = {};
+
 // const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, dbConfig);
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
     host: dbConfig.HOST,
@@ -13,7 +17,6 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
     },
     logging: false,
 });
-const db = {};
 
 // 모델 추가
 db.results = require("./result.model.js")(sequelize, Sequelize);
