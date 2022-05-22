@@ -1,5 +1,5 @@
-require('dotenv').config();
-const env = process.env;
+// require('dotenv').config();
+// const env = process.env;
 
 // module.exports = {
 //     HOST:env.MYSQL_HOST,
@@ -15,12 +15,15 @@ const env = process.env;
 //     }
 // };
 
+const dotenv = require('dotenv');
+dotenv.config();
+
 module.exports = {
     development : {
-        HOST:env.MYSQL_HOST,
-        USER: env.MYSQL_USERNAME,
-        PASSWORD: env.MYSQL_PASSWORD,
-        DB: env.MYSQL_DATABASE,
+        host:process.env.MYSQL_HOST,
+        username: process.env.MYSQL_USERNAME,
+        password: process.env.MYSQL_PASSWORD,
+        database: process.env.MYSQL_DATABASE,
         dialect: "mysql",
         pool: {
             max: 5,
@@ -30,10 +33,10 @@ module.exports = {
         }
     },
     test : {
-        HOST:env.MYSQL_HOST,
-        USER: env.MYSQL_USERNAME,
-        PASSWORD: env.MYSQL_PASSWORD,
-        DB: env.MYSQL_DATABASE,
+        host:process.env.MYSQL_HOST,
+        username: process.env.MYSQL_USERNAME,
+        password: process.env.MYSQL_PASSWORD,
+        database: process.env.MYSQL_DATABASE,
         dialect: "mysql",
         pool: {
             max: 5,
@@ -43,10 +46,10 @@ module.exports = {
         }
     },
     production : {
-        HOST:env.MYSQL_HOST,
-        USER: env.MYSQL_USERNAME,
-        PASSWORD: env.MYSQL_PASSWORD,
-        DB: env.MYSQL_DATABASE,
+        host:process.env.MYSQL_HOST,
+        username: process.env.MYSQL_USERNAME,
+        password: process.env.MYSQL_PASSWORD,
+        database: process.env.MYSQL_DATABASE,
         dialect: "mysql",
         pool: {
             max: 5,
