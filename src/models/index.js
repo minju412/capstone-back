@@ -6,7 +6,7 @@ const db = {};
 
 // const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, dbConfig);
 const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, {
-    host: dbConfig.HOST,
+    host: dbConfig.host,
     dialect: dbConfig.dialect,
     operatorsAliases: false,
     pool: {
