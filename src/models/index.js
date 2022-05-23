@@ -4,7 +4,6 @@ const env = process.env.NODE_ENV || 'development';
 const dbConfig = require("../config/config")[env];
 const db = {};
 
-// const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, dbConfig);
 const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, {
     host: dbConfig.host,
     dialect: dbConfig.dialect,
