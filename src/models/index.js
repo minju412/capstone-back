@@ -7,7 +7,6 @@ const db = {};
 // const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, dbConfig);
 const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, {
     host: dbConfig.host,
-    port: process.env.MYSQL_PORT,
     dialect: dbConfig.dialect,
     operatorsAliases: false,
     pool: {
