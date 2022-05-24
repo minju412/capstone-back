@@ -6,7 +6,7 @@ module.exports = {
         host:process.env.MYSQL_HOST,
         username: process.env.MYSQL_USERNAME,
         password: process.env.MYSQL_PASSWORD,
-        database: process.env.MYSQL_DATABASE,
+        database: process.env.MYSQL_DATABASE_DEV,
         dialect: "mysql",
         pool: {
             max: 5,
@@ -19,7 +19,7 @@ module.exports = {
         host:process.env.MYSQL_HOST,
         username: process.env.MYSQL_USERNAME,
         password: process.env.MYSQL_PASSWORD,
-        database: process.env.MYSQL_DATABASE,
+        database: process.env.MYSQL_DATABASE_TEST,
         dialect: "mysql",
         pool: {
             max: 5,
@@ -32,7 +32,7 @@ module.exports = {
         host:process.env.MYSQL_HOST,
         username: process.env.MYSQL_USERNAME,
         password: process.env.MYSQL_PASSWORD,
-        database: process.env.MYSQL_DATABASE,
+        database: process.env.MYSQL_DATABASE_PROD,
         dialect: "mysql",
         pool: {
             max: 5,
@@ -42,4 +42,3 @@ module.exports = {
         }
     },
 };
-

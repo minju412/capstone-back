@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon bin/www.js",
+    "dev": "cross-env NODE_ENV=development nodemon bin/www.js",
     "test": "cross-env NODE_ENV=test mocha api/results/results.spec.js",
     "start": "cross-env NODE_ENV=production node bin/www.js"
   },
