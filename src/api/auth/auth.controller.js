@@ -154,7 +154,7 @@ const refresh = async (req, res) => {
 };
 
 // 사용자 정보 받아오기
-const userInfo = async (req, res, next) => {
+const userInfo = async (req, res) => {
     try {
         if (req.id) {
             const userWithoutPw = await User.findOne({
@@ -173,7 +173,11 @@ const userInfo = async (req, res, next) => {
         }
     } catch (error) {
         console.error(error);
-        next(error);
+        res.status(500).send({
+            ok: false,
+            message: '사용자 정보를 가져올 수 없습니다.',
+        });
+        // next(error);
     }
 };
 
