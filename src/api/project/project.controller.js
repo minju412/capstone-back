@@ -131,18 +131,13 @@ const createKeyword = async (req, res) => {
             }
         });
         if(project) {
-            let keyword = await Keyword.findOne({
+            let keyword = await Keyword.findOrCreate({
                 where: {
                     keyword: req.body.keyword,
                 },
-            });
-            if (!keyword){
-                keyword = await Keyword.create({
-                    keyword: req.body.keyword,
-                });
-            }
+            }); // findOrCreate() -> keyword는 [키워드, true] 형태 -> keyword[0].id를 사용
 
-            await project.addKeyword(keyword.id); // Add 테이블(through table)의 project_id와 keyword_id 값을 삽입한다.
+            await project.addKeyword(keyword[0].id); // Add 테이블(through table)의 project_id와 keyword_id 값을 삽입한다.
             res.status(200).json({ ProjectId: parseInt(req.params.projectId, 10) });
         } else{
             res.status(403).send({
