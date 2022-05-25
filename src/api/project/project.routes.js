@@ -12,6 +12,7 @@ let routes = (app) => {
     router.get("/list", authJwt, projectController.viewProjectList); // GET project/list?paged=1 : 프로젝트 리스트 확인
 
     router.post("/:projectId/keyword", authJwt, projectController.createKeyword); // POST project/1/keyword : 키워드 추가
+    router.patch("/:projectId/keyword", authJwt, projectController.patchKeyword); // PATCH project/1/keyword : 키워드 수정
     router.delete("/:projectId/keyword", authJwt, projectController.deleteKeyword); // DELETE project/1/keyword : 키워드 삭제
     router.get("/:projectId/keyword", authJwt, projectController.viewKeywordList); // GET project/1/keyword : 키워드 리스트 확인
 

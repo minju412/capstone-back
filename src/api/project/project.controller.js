@@ -152,6 +152,49 @@ const createKeyword = async (req, res) => {
     }
 };
 
+// 키워드 수정
+const patchKeyword = async (req, res) => {
+    try{
+        const project = await Project.findOne({
+            where: {
+                id: req.params.projectId,
+                user_id: req.id
+            }
+        });
+        if(project) {
+            const keyword = await Keyword.findOne({
+                where: {
+                    keyword: req.body.oldKeyword,
+                    // project_id: req.params.projectId // 키워드가 그 프로젝트에 속했는지 확인해야함!!
+                },
+            });
+            if (keyword){
+                const newKeyword = await Keyword.findOrCreate({ // 해당 키워드가 다른 프로젝트에 추가되어있을 수 있어서 새로 생성
+                    where: {
+                        keyword: req.body.newKeyword,
+                    },
+                });
+                await project.removeKeyword(keyword.id);
+                await project.addKeyword(newKeyword[0].id);
+                res.status(200).send('키워드 수정 성공');
+            } else{
+                res.status(403).send({
+                    message: "존재하지 않는 키워드입니다.",
+                });
+            }
+        } else{
+            res.status(403).send({
+                message: "존재하지 않는 프로젝트입니다.",
+            });
+        }
+    } catch(error){
+        console.log(error);
+        res.status(500).send({
+            message: "키워드 수정 실패",
+        });
+    }
+};
+
 // 키워드 삭제
 const deleteKeyword = async (req, res) => {
     try{
@@ -165,6 +208,7 @@ const deleteKeyword = async (req, res) => {
             let keyword = await Keyword.findOne({
                 where: {
                     keyword: req.body.keyword,
+                    // 키워드가 그 프로젝트에 속했는지 확인해야함!!
                 },
             });
             if(keyword){
@@ -383,6 +427,7 @@ module.exports = {
     patchProject,
     deleteProject,
     createKeyword,
+    patchKeyword,
     deleteKeyword,
     createUrl,
     deleteUrl,
