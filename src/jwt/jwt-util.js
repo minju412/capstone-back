@@ -7,7 +7,7 @@ const secret = env.JWT_SECRET_KEY;
 
 module.exports = {
     sign: (user) => { // access token 발급
-        let payload = { // access token에 들어갈 payload
+        const payload = { // access token에 들어갈 payload
             id: user.id,
             userName: user.userName,
         };

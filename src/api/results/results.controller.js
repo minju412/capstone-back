@@ -16,6 +16,8 @@ const getResults = async (req, res) => {
     const cg = req.query.category;
     const sortby = req.query.sortby;
     const order = req.query.order; // asc OR desc
+    const title = req.query.title;
+    const url = req.query.url;
 
     const category_attr = {};
     if ( cg ) {
@@ -23,12 +25,23 @@ const getResults = async (req, res) => {
     } else {
         category_attr[Op.not]= null;
     }
-
     const lang_attr = {};
     if ( lang ) {
         lang_attr[Op.eq]= lang;
     } else {
         lang_attr[Op.not]= null;
+    }
+    const title_attr = {};
+    if ( title ) {
+        title_attr[Op.like]= `%${title}%`;
+    } else {
+        title_attr[Op.not]= null;
+    }
+    const url_attr = {};
+    if ( url ) {
+        url_attr[Op.like]= `%${url}%`;
+    } else {
+        url_attr[Op.not]= null;
     }
 
     await Result
@@ -36,6 +49,8 @@ const getResults = async (req, res) => {
         where: {
             language: lang_attr,
             category: category_attr,
+            title: title_attr,
+            url: url_attr,
         },
         raw : true,
         order: [[`${sortby}`, `${order}`]],
