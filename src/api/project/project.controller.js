@@ -207,10 +207,13 @@ const createUrl = async (req, res) => {
                 url = await Url.create({
                     url: req.body.url,
                 });
+                await project.addMonitoringUrl(url.id); // MonitoringUrl 테이블의 project_id(FK)에 값을 삽입한다.
+                res.status(200).json({ ProjectId: parseInt(req.params.projectId, 10) });
+            } else{
+                res.status(409).send({
+                    message: "이미 존재하는 url입니다.",
+                });
             }
-
-            await project.addMonitoringUrl(url.id); // MonitoringUrl 테이블의 project_id(FK)에 값을 삽입한다.
-            res.status(200).json({ ProjectId: parseInt(req.params.projectId, 10) });
         } else{
             res.status(403).send({
                 message: "존재하지 않는 프로젝트입니다.",
