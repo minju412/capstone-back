@@ -68,7 +68,7 @@ const getResults = async (req, res) => {
         });
 };
 
-const count = (req, res) => {
+const categoryCount = (req, res) => {
     db.sequelize.query("SELECT category, COUNT(title) AS count FROM Results GROUP BY category")
         .then(data => {
             res.status(200).json(data[0]);
@@ -76,12 +76,26 @@ const count = (req, res) => {
         .catch(err => {
             console.log(err);
             res.status(500).send({
-                message: "결과를 카운트 할 수 없습니다.",
+                message: "카테고리를 카운트 할 수 없습니다.",
+            });
+        })
+};
+
+const languageCount = (req, res) => {
+    db.sequelize.query("SELECT language, COUNT(title) AS count FROM Results GROUP BY language")
+        .then(data => {
+            res.status(200).json(data[0]);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).send({
+                message: "언어를 카운트 할 수 없습니다.",
             });
         })
 };
 
 module.exports = {
     getResults,
-    count
+    categoryCount,
+    languageCount,
 };
