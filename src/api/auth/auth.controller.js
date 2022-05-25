@@ -3,7 +3,7 @@ const User = db.users;
 const bcrypt = require('bcrypt');
 
 const jwt_util = require('../../jwt/jwt-util');
-const { sign, verify, refreshVerify } = require('../../jwt/jwt-util');
+// const { sign, verify, refreshVerify } = require('../../jwt/jwt-util');
 const jwt = require('jsonwebtoken');
 const redisClient = require('../../jwt/redis')
 
@@ -82,13 +82,13 @@ const login = (req, res) => {
 // access token 재발급 (클라이언트는 access token과 refresh token을 둘 다 헤더에 담아서 요청)
 const refresh = async (req, res) => {
     // access token과 refresh token의 존재 유무를 체크한다.
-    console.log(req.headers.authorization)
+    // console.log(req.headers.authorization)
     if (req.headers.authorization && req.headers.refresh) {
         const authToken = req.headers.authorization;
         const refreshToken = req.headers.refresh;
 
         // access token 검증 -> expired여야 함.
-        const authResult = verify(authToken);
+        const authResult = jwt_util.verify(authToken);
 
         // access token 디코딩하여 user의 정보를 가져온다.
         const decoded = jwt.decode(authToken);
@@ -102,25 +102,11 @@ const refresh = async (req, res) => {
         }
 
         // access token의 decoding 된 값에서 유저의 id를 가져와 refresh token을 검증한다.
-        let user = null;
-        try {
-            user = User.findOne({
-                where : {
-                    id: decoded.id,
-                }
-            })
-        } catch (err) {
-            res.status(401).send({
-                ok: false,
-                message: err.message,
-            });
-        }
-
-        const refreshResult = refreshVerify(refreshToken, decoded.id);
+        const refreshResult = jwt_util.refreshVerify(refreshToken, decoded.id);
 
         // 재발급을 위해서는 access token이 만료되어 있어야함.
         if (authResult.ok === false && authResult.message === 'jwt expired') {
-            // 1. access token이 만료되고, refresh token도 만료 된 경우 => 새로 로그인해야합니다.
+            // 1. access token이 만료되고, refresh token도 만료 된 경우 => 새로 로그인해야한다.
             if (refreshResult.ok === false) {
                 res.status(401).send({
                     ok: false,
@@ -128,8 +114,8 @@ const refresh = async (req, res) => {
                 });
             } else {
                 // 2. access token이 만료되고, refresh token은 만료되지 않은 경우 => 새로운 access token을 발급
-                const newAccessToken = sign(user);
-
+                const newAccessToken = jwt_util.sign(decoded);
+                console.log(decoded.id)
                 res.status(200).send({ // 새로 발급한 access token과 원래 있던 refresh token 모두 클라이언트에게 반환.
                     ok: true,
                     data: {
