@@ -10,6 +10,7 @@ let routes = (app) => {
     router.delete("/:projectId", authJwt, projectController.deleteProject); // DELETE project/1 : 프로젝트 삭제
     router.patch("/:projectId", authJwt, projectController.patchProject); // PATCH project/1 : 프로젝트 이름,타겟도메인,설명 수정
     router.get("/list", authJwt, projectController.viewProjectList); // GET project/list?paged=1 : 프로젝트 리스트 확인
+    router.get("/:projectId", authJwt, projectController.viewProject); // GET project/1 : 특정 프로젝트 정보 확인
 
     router.post("/:projectId/keyword", authJwt, projectController.createKeyword); // POST project/1/keyword : 키워드 추가
     router.patch("/:projectId/keyword", authJwt, projectController.patchKeyword); // PATCH project/1/keyword : 키워드 수정

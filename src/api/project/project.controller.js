@@ -27,6 +27,30 @@ const viewProjectList = async (req, res) => {
     }
 };
 
+// 특정 프로젝트 정보 확인
+const viewProject = async (req, res) => {
+    try{
+        const project = await Project.findOne({
+            where: {
+                id: req.params.projectId,
+                user_id: req.id
+            }
+        });
+        if(project) {
+            res.status(200).json(project);
+        } else{
+            res.status(403).send({
+                message: "존재하지 않는 프로젝트입니다.",
+            });
+        }
+    } catch(error){
+        console.log(error);
+        res.status(500).send({
+            message: "프로젝트 정보 조회 실패",
+        });
+    }
+};
+
 // 프로젝트 생성 (이름,타겟도메인,설명)
 const createProject = async (req, res) => {
     try{
@@ -423,6 +447,7 @@ const viewKeywordList = async (req,res) => {
 
 module.exports = {
     viewProjectList,
+    viewProject,
     createProject,
     patchProject,
     deleteProject,
