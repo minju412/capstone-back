@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon bin/www.js",
     "test": "cross-env NODE_ENV=test mocha api/results/results.spec.js",
-    "start": "cross-env NODE_ENV=production pm2 start bin/www.js"
+    "start": "cross-env NODE_ENV=production PORT=3065 pm2 start bin/www.js"
   },
   "author": "mj",
   "license": "ISC",
