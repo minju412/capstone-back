@@ -46,7 +46,7 @@ const cookieParser = require('cookie-parser');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-    origin: process.env.CLIENT_URL,
+    origin: [process.env.CLIENT_URL, 'https://localhost:3000'],
     credentials: true, // 쿠키 전달
 }));
 // app.use(cors());
