@@ -46,8 +46,7 @@ const cookieParser = require('cookie-parser');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-    // origin: [process.env.CLIENT_URL, 'http://dwintel.tk'],
-    origin: true,
+    origin: process.env.CLIENT_URL,
     credentials: true, // 쿠키 전달
 }));
 // app.use(cors());
@@ -60,7 +59,7 @@ app.use(session({
     store: redisSessionStore,
     cookie: {
         httpOnly: true,
-        secure: false,
+        secure: true, // https 적용
         domain: process.env.NODE_ENV === 'production' && '.dwintel.tk'
     }
 }));
