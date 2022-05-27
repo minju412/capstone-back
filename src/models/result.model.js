@@ -1,10 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
     const Result = sequelize.define('Result', {
-        thumbnail: {
-            type: Sequelize.STRING(200),
-            allowNull: true,
-            comment: "사이트 썸네일",
-        },
         url: {
             type: Sequelize.STRING(200),
             allowNull: false,
@@ -39,6 +34,22 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: true,
         },
         reference_url: {
+            type: Sequelize.STRING(200),
+            allowNull: true,
+        },
+        html: {
+            type: Sequelize.STRING(200),
+            allowNull: true,
+        },
+        traffic: {
+            type: Sequelize.STRING(200),
+            allowNull: true,
+        },
+        image: {
+            type: Sequelize.STRING(200),
+            allowNull: true,
+        },
+        search_time: {
             type: Sequelize.STRING(200),
             allowNull: true,
         },
