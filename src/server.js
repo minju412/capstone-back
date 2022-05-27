@@ -43,6 +43,13 @@ const redisOptions = {
 const redisSessionStore = new RedisStore(redisOptions);
 const cookieParser = require('cookie-parser');
 
+// remote python module 과 통신신 설정
+// // processResponse 는 결과 도착시 수행될 함수를 인자로 받음
+const taskManager = require('./amqp_client/taskManager')
+taskManager.setup().then(async () => {
+    await taskManager.processResponse(require('./api/search/search.services').processTaskResult)
+})
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
