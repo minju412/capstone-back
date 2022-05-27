@@ -33,15 +33,33 @@ const initProjectRoutes = require("./api/project/project.routes");
 global.__basedir = __dirname + "/..";
 
 const session = require('express-session');
-const RedisStore = require('connect-redis')(session);
+const connectRedis = require('connect-redis');
+const RedisStore = connectRedis(session);
 const redisClient = require('redis').createClient({url: process.env.REDIS_URL});
-const redisOptions = {
-    client: redisClient,
-    no_ready_check: true,
-    ttl: 600,
-    logErrors: true
-};
-const redisSessionStore = new RedisStore(redisOptions);
+const sess = {
+    resave: false,
+    saveUninitialized: false,
+    secret: env.COOKIE_SECRET,
+    cookie: {
+        httpOnly: true,
+        secure: true, // https 적용
+        domain: process.env.NODE_ENV === 'production' && '.dwintel.tk'
+    },
+    store: new RedisStore({
+        client: redisClient,
+        logErrors: true
+    }),
+}
+// const session = require('express-session');
+// const RedisStore = require('connect-redis')(session);
+// const redisClient = require('redis').createClient({url: process.env.REDIS_URL});
+// const redisOptions = {
+//     client: redisClient,
+//     no_ready_check: true,
+//     ttl: 600,
+//     logErrors: true
+// };
+// const redisSessionStore = new RedisStore(redisOptions);
 const cookieParser = require('cookie-parser');
 
 // remote python module 과 통신신 설정
@@ -60,17 +78,18 @@ app.use(cors({
 // app.use(cors());
 
 app.use(cookieParser(env.COOKIE_SECRET));
-app.use(session({
-    saveUninitialized: false,
-    resave: false,
-    secret: env.COOKIE_SECRET,
-    store: redisSessionStore,
-    cookie: {
-        httpOnly: true,
-        secure: true, // https 적용
-        domain: process.env.NODE_ENV === 'production' && '.dwintel.tk'
-    }
-}));
+app.use(session(sess)); // 추가
+// app.use(session({
+//     saveUninitialized: false,
+//     resave: false,
+//     secret: env.COOKIE_SECRET,
+//     store: redisSessionStore,
+//     cookie: {
+//         httpOnly: true,
+//         secure: true, // https 적용
+//         domain: process.env.NODE_ENV === 'production' && '.dwintel.tk'
+//     }
+// }));
 
 app.get('/', (req, res) => {
     res.send('백엔드 정상 동작');
