@@ -12,7 +12,7 @@ async function createNewTask(userId, domain) {
             },
             { where: {id: userId} }
         )
-        await taskManager.requestTask(userId, {domain});
+        await taskManager.requestTask(`${userId}`, {domain});
     } catch(err) {
         console.error(err)
     }
