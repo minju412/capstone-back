@@ -6,7 +6,7 @@ const app = express();
 const morgan = require('morgan'); // morgan은 서버의 콘솔로그를 출력
 const hpp = require('hpp');
 const helmet = require('helmet');
-const redisClient = require('./jwt/redis');
+// const redisClient = require('./jwt/redis');
 
 if (process.env.NODE_ENV === 'production'){
     app.use(morgan('combined'));
@@ -34,7 +34,7 @@ global.__basedir = __dirname + "/..";
 
 const session = require('express-session');
 const RedisStore = require('connect-redis')(session);
-// const redisClient = require('redis').createClient({url: process.env.REDIS_URL});
+const redisClient = require('redis').createClient({url: process.env.REDIS_URL});
 const redisOptions = {
     client: redisClient,
     no_ready_check: true,
