@@ -17,7 +17,7 @@ module.exports = (sequelize, Sequelize) => {
             comment: "사용 언어",
         },
         category: {
-            type: Sequelize.ENUM('adult', 'hacking', 'drug', 'gambling', 'murder', 'info_leak', 'weapon', 'unknown'),
+            type: Sequelize.ENUM('adult', 'hacking', 'drug', 'gambling', 'weapon', 'violence', 'counterfeit'),
             allowNull: false,
             comment: "카테고리",
         },
@@ -38,7 +38,7 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: true,
         },
         html: {
-            type: Sequelize.STRING(200),
+            type: Sequelize.TEXT('long'),
             allowNull: true,
         },
         traffic: {

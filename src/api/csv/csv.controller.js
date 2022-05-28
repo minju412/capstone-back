@@ -50,7 +50,6 @@ const download = (req, res) => {
         objs.forEach((obj) => {
             const {
                 id,
-                thumbnail,
                 url,
                 title,
                 language,
@@ -58,11 +57,14 @@ const download = (req, res) => {
                 site_tracking_codes,
                 personal_information,
                 others,
-                reference_url
+                reference_url,
+                html,
+                traffic,
+                image,
+                search_time
             } = obj;
             results.push({
                 id,
-                thumbnail,
                 url,
                 title,
                 language,
@@ -70,16 +72,20 @@ const download = (req, res) => {
                 site_tracking_codes,
                 personal_information,
                 others,
-                reference_url
+                reference_url,
+                html,
+                traffic,
+                image,
+                search_time
             });
         });
 
-        const csvFields = ["Id","Thumbnail", "Url", "Title", "Language", "Category", "Site_Tracking_Codes", "Personal_Information", "Others", "Reference_Url"];
+        const csvFields = ["Id", "Url", "Title", "Language", "Category", "Site_Tracking_Codes", "Personal_Information", "Others", "Reference_Url", "Html", "Traffic", "Image", "Search_Time"];
         const csvParser = new CsvParser({csvFields});
         const csvData = csvParser.parse(results);
 
         res.setHeader("Content-Type", "text/csv");
-        res.setHeader("Content-Disposition", "attachment; filename=test.csv");
+        res.setHeader("Content-Disposition", "attachment; filename=result.csv");
 
         res.status(200).end(csvData);
     });
